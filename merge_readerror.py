@@ -88,16 +88,17 @@ if __name__ == '__main__':
     if args.reference:
         if os.path.exists(args.reference):
             with open(args.reference) as f:
+                f.readline() # drop header
                 while True:
-                    try:
-                        line = input().strip()
-                        if line[0] == '#' or len(line)==0:
-                            continue
-                        else:
-                            barcode = line.split()[0]
-                            merged_barcodes.add(barcode)
-                    except EOFError:
+                    line = f.readline()
+                    if not line: # EOF
                         break
+                    line = line.strip()
+                    if line[0] == '#' or len(line)==0:
+                        continue
+                    else:
+                        barcode = line.split()[0]
+                        merged_barcodes.add(barcode)
         else:
             print('Error: reference file "{}" does not exist.'.format(args.reference),
                   file=sys.stderr)

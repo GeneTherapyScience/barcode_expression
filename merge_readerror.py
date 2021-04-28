@@ -8,11 +8,11 @@ from itertools import product
 from collections import defaultdict
 from tqdm import tqdm, trange
 
-input = lambda: sys.stdin.readline().rstrip()
+#input = lambda: sys.stdin.readline().rstrip()
 ATGC = sorted(['A', 'T', 'G', 'C'])
 CGTA = ATGC[::-1]
 
-def levenshtein_1(barcode):
+def levenshtein_upto1(barcode):
     N = len(barcode)
     done = {barcode}
     yield barcode
@@ -35,11 +35,8 @@ def levenshtein_1(barcode):
 
 def levenshtein_upto2(barcode):
     done = set()
-    for c in levenshtein_1(barcode):
-        done.add(c)
-        yield c
-    for c in levenshtein_1(barcode):
-        for d in levenshtein_2(c):
+    for c in levenshtein_upto1(barcode):
+        for d in levenshtein_upto1(c):
             if not d in done:
                 done.add(d)
                 yield d
@@ -72,7 +69,7 @@ if __name__ == '__main__':
     while True:
         try:
             line = input().strip()
-            if line[0] == '#' or len(line)==0:
+            if len(line)==0 or line[0] == '#':
                 continue
             else:
                 barcode, readnum, altered = line.split()[:3]
@@ -81,7 +78,7 @@ if __name__ == '__main__':
                 data.append((barcode, readnum, altered))
         except EOFError:
             break
-    data.sort(key=lambda x: x[0].count('N'), -x[1], x[0])
+    data.sort(key=lambda x: (x[0].count('N'), -x[1], x[0]))
     N = len(data)
 
     merged_barcodes = set()

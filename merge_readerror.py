@@ -82,7 +82,6 @@ if __name__ == '__main__':
     N = len(data)
 
     merged_barcodes = set()
-    original_barcode = dict()
     merged_readnum = defaultdict(int)
     merged_altered = defaultdict(int)
     if args.reference:

@@ -6,6 +6,7 @@ import sys
 import argparse
 from itertools import product
 from collections import defaultdict
+from tqdm import tqdm, trange
 
 input = lambda: sys.stdin.readline().rstrip()
 ATGC = sorted(['A', 'T', 'G', 'C'])
@@ -17,6 +18,8 @@ def levenshtein_1(barcode):
     yield barcode
     for i in range(N):
         yield barcode[:i] + barcode[i+1:]
+        if barcode[i] == 'N':
+            continue
         for n in ATGC:
             if n != barcode[i]:
                 c = barcode[:i] + n + barcode[i+1:]
@@ -79,6 +82,7 @@ if __name__ == '__main__':
         except EOFError:
             break
     data.sort(key=lambda x: x[0].count('N'), -x[1], x[0])
+    N = len(data)
 
     merged_barcodes = set()
     original_barcode = dict()
@@ -95,36 +99,35 @@ if __name__ == '__main__':
                         else:
                             barcode = line.split()[0]
                             merged_barcodes.add(barcode)
-                            for d in levenshtein_upto2(barcode):
-                                original_barcode[d] = barcode
                     except EOFError:
                         break
         else:
             print('Error: reference file "{}" does not exist.'.format(args.reference),
                   file=sys.stderr)
-    else:
-        for barcode, readnum, altered in data:
-            if not 'N' in barcode:
-                if barcode in original_barcode:
-                    merged_readnum[original_barcode[barcode]] += readnum
-                    merged_altered[original_barcode[barcode]] += altered
-                elif args.reference:
-                    print('The sequence {} was not found in the reference.'.format(barcode), file=sys.stderr)
-                else:
-                    merged_barcodes.add(barcode)
-                    merged_readnum[barcode] += readnum
-                    merged_altered[barcode] += altered
-                    original_barcode[barcode] = barcode
-                    for d in levenshtein_upto2(barcode):
-                        original_barcode[d] = barcode
-            else:
-                for c in N_candidates(barcode):
-                    if c in original_barcode:
-                        merged_readnum[original_barcode[c]] += readnum
-                        merged_altered[original_barcode[c]] += altered
+
+    for i in trange(N):
+        barcode, readnum, altered = data[i]
+        candidates = set()
+        for c in levenshtein_upto2(barcode):
+            for d in N_candidates(c):
+                if not d in candidates:
+                    candidates.add(d)
+                    if d in merged_barcodes:
+                        merged_readnum[d] += readnum
+                        merged_altered[d] += altered
                         break
-                else:
-                    print('N-including barcode', barcode, 'has no parent array.', file=sys.stderr)
+            else:
+                continue
+            break
+        else:
+            if args.reference:
+                print('The sequence {} was not found in the reference.'.format(barcode), file=sys.stderr)
+            elif 'N' in barcode:
+                print('N-including barcode', barcode, 'has no parent array.', file=sys.stderr)
+            else:
+                merged_barcodes.add(barcode)
+                merged_readnum[barcode] += readnum
+                merged_altered[barcode] += altered
 
     for barcode in sorted(merged_barcodes):
         readnum, altered = merged_readnum[barcode], merged_altered[barcode]

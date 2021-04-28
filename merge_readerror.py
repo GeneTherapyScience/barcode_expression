@@ -17,11 +17,12 @@ def levenshtein_neighbors(barcode, distance):
     if distance == 0:
         yield barcode
     else:
-        done = set()
+        prev = list()
         for b in levenshtein_neighbors(barcode, distance-1):
-            done.add(b)
+            prev.append(b)
             yield b
-        for b in levenshtein_neighbors(barcode, distance-1):
+        done = set(prev)
+        for b in prev:
             N = len(b)
             for i in range(N):
                 yield b[:i] + b[i+1:]

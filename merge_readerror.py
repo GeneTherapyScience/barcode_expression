@@ -14,6 +14,7 @@ CGTA = ATGC[::-1]
 def levenshtein_1(barcode):
     N = len(barcode)
     done = {barcode}
+    yield barcode
     for i in range(N):
         yield barcode[:i] + barcode[i+1:]
         for n in ATGC:
@@ -30,7 +31,7 @@ def levenshtein_1(barcode):
                 yield c
 
 def levenshtein_upto2(barcode):
-    done = {barcode}
+    done = set()
     for c in levenshtein_1(barcode):
         done.add(c)
         yield c

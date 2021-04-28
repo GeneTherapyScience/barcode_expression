@@ -8,7 +8,6 @@ import argparse
 from collections import defaultdict
 from tqdm import trange
 
-#input = lambda: sys.stdin.readline().rstrip()
 ATGC = sorted(['A', 'T', 'G', 'C'])
 CGTA = ATGC[::-1]
 

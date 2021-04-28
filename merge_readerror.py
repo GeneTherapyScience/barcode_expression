@@ -8,7 +8,7 @@ from itertools import product
 from collections import defaultdict
 
 input = lambda: sys.stdin.readline().rstrip()
-ATGC = ['A', 'T', 'G', 'C']
+ATGC = sorted(['A', 'T', 'G', 'C'])
 CGTA = ATGC[::-1]
 
 def levenshtein_1(barcode):

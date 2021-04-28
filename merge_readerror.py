@@ -137,6 +137,7 @@ if __name__ == '__main__':
                 merged_readnum[barcode] += readnum
                 merged_altered[barcode] += altered
 
+    print(header)
     for barcode in sorted(merged_barcodes):
         readnum, altered = merged_readnum[barcode], merged_altered[barcode]
         if readnum == 0:

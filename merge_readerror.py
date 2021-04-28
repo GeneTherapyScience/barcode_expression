@@ -60,7 +60,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--reference', default=None,
                         help='give reference barcodes.')
+    parser.add_argument('-w', '--warningout', default=None,
+                        help='file to output warnings.')
     args = parser.parse_args()
+    if args.warningout and os.path.exists(args.warningout):
+        warningout = open(args.warningout, 'w')
+    else:
+        warningout = sys.stderr
 
     header = input()
     data = []
@@ -98,7 +104,7 @@ if __name__ == '__main__':
                         merged_barcodes.add(barcode)
         else:
             print('Error: reference file "{}" does not exist.'.format(args.reference),
-                  file=sys.stderr)
+                  file=warningout)
 
     for i in trange(N):
         barcode, readnum, altered = data[i]
@@ -116,9 +122,9 @@ if __name__ == '__main__':
             break
         else:
             if args.reference:
-                print('The sequence {} was not found in the reference.'.format(barcode), file=sys.stderr)
+                print('The sequence {} was not found in the reference.'.format(barcode), file=warningout)
             elif 'N' in barcode:
-                print('N-including barcode', barcode, 'has no parent array.', file=sys.stderr)
+                print('N-including barcode', barcode, 'has no parent array.', file=warningout)
             else:
                 merged_barcodes.add(barcode)
                 merged_readnum[barcode] += readnum

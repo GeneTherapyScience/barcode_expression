@@ -5,9 +5,8 @@
 import os
 import sys
 import argparse
-from itertools import product
 from collections import defaultdict
-from tqdm import tqdm, trange
+from tqdm import trange
 
 #input = lambda: sys.stdin.readline().rstrip()
 ATGC = sorted(['A', 'T', 'G', 'C'])

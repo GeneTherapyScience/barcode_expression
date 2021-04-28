@@ -8,6 +8,8 @@ import argparse
 from collections import defaultdict
 from tqdm import trange
 
+max_errors = 2
+
 ATGC = sorted(['A', 'T', 'G', 'C'])
 CGTA = ATGC[::-1]
 
@@ -115,7 +117,7 @@ if __name__ == '__main__':
     for i in mrange(N):
         barcode, readnum, altered = data[i]
         candidates = set()
-        for c in levenshtein_neighbors(barcode,2):
+        for c in levenshtein_neighbors(barcode, max_errors):
             for d in N_candidates(c):
                 if not d in candidates:
                     candidates.add(d)

@@ -2,6 +2,7 @@
 ###
 # usage: # python3 merge_readerror.py [--reference reference.data] < input.data > output.data
 ###
+import os
 import sys
 import argparse
 from itertools import product

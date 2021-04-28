@@ -67,7 +67,7 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--noprogress', action='store_true',
                         help='do not show a progress bar.')
     args = parser.parse_args()
-    if args.warningout and os.path.exists(args.warningout):
+    if args.warningout:
         warningout = open(args.warningout, 'w')
     else:
         warningout = sys.stderr

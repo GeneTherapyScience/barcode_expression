@@ -12,34 +12,32 @@ from tqdm import tqdm, trange
 ATGC = sorted(['A', 'T', 'G', 'C'])
 CGTA = ATGC[::-1]
 
-def levenshtein_upto1(barcode):
-    N = len(barcode)
-    done = {barcode}
-    yield barcode
-    for i in range(N):
-        yield barcode[:i] + barcode[i+1:]
-        if barcode[i] == 'N':
-            continue
-        for n in ATGC:
-            if n != barcode[i]:
-                c = barcode[:i] + n + barcode[i+1:]
-                if not c in done:
-                    done.add(c)
-                    yield c
-    for i in range(N+1):
-        for n in ATGC:
-            c = barcode[:i] + n + barcode[i:]
-            if not c in done:
-                done.add(c)
-                yield c
-
-def levenshtein_upto2(barcode):
-    done = set()
-    for c in levenshtein_upto1(barcode):
-        for d in levenshtein_upto1(c):
-            if not d in done:
-                done.add(d)
-                yield d
+def levenshtein_neighbors(barcode, distance):
+    if distance == 0:
+        yield barcode
+    else:
+        done = set()
+        for b in levenshtein_neighbors(barcode, distance-1):
+            done.add(b)
+            yield b
+        for b in levenshtein_neighbors(barcode, distance-1):
+            N = len(b)
+            for i in range(N):
+                yield b[:i] + b[i+1:]
+                if b[i] == 'N':
+                    continue
+                for n in ATGC:
+                    if n != b[i]:
+                        c = b[:i] + n + b[i+1:]
+                        if not c in done:
+                            done.add(c)
+                            yield c
+            for i in range(N+1):
+                for n in ATGC:
+                    c = b[:i] + n + b[i:]
+                    if not c in done:
+                        done.add(c)
+                        yield c
 
 def N_candidates(barcode):
     k = barcode.count('N')
@@ -105,7 +103,7 @@ if __name__ == '__main__':
     for i in trange(N):
         barcode, readnum, altered = data[i]
         candidates = set()
-        for c in levenshtein_upto2(barcode):
+        for c in levenshtein_neighbors(barcode,2):
             for d in N_candidates(c):
                 if not d in candidates:
                     candidates.add(d)

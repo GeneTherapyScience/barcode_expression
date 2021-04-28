@@ -13,23 +13,31 @@ CGTA = ATGC[::-1]
 
 def levenshtein_1(barcode):
     N = len(barcode)
+    done = {barcode}
     for i in range(N):
         yield barcode[:i] + barcode[i+1:]
         for n in ATGC:
             if n != barcode[i]:
-                yield barcode[:i] + n + barcode[i+1:]
+                c = barcode[:i] + n + barcode[i+1:]
+                if not c in done:
+                    done.add(c)
+                    yield c
     for i in range(N+1):
         for n in ATGC:
-            yield barcode[:i] + n + barcode[i:]
+            c = barcode[:i] + n + barcode[i:]
+            if not c in done:
+                done.add(c)
+                yield c
 
 def levenshtein_upto2(barcode):
-    ls_upto1 = {barcode}
+    done = {barcode}
     for c in levenshtein_1(barcode):
-        ls_upto1.add(c)
+        done.add(c)
         yield c
     for c in levenshtein_1(barcode):
         for d in levenshtein_2(c):
-            if not d in ls_upto1:
+            if not d in done:
+                done.add(d)
                 yield d
 
 def N_candidates(barcode):

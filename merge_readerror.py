@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 ###
-# usage: # python3 merge_readerror.py [--reference reference.data] < input.data > output.data
+# usage: # python3 merge_readerror.py [-n] [-w warnings.output] [-r reference.data] < input.data > output.data
 ###
 import os
 import sys
@@ -64,11 +64,17 @@ if __name__ == '__main__':
                         help='give reference barcodes.')
     parser.add_argument('-w', '--warningout', default=None,
                         help='file to output warnings.')
+    parser.add_argument('-n', '--noprogress', action='store_true',
+                        help='do not show a progress bar.')
     args = parser.parse_args()
     if args.warningout and os.path.exists(args.warningout):
         warningout = open(args.warningout, 'w')
     else:
         warningout = sys.stderr
+    if args.noprogress:
+        mrange = range
+    else:
+        mrange = trange
 
     header = input()
     data = []
@@ -108,7 +114,7 @@ if __name__ == '__main__':
             print('Error: reference file "{}" does not exist.'.format(args.reference),
                   file=warningout)
 
-    for i in trange(N):
+    for i in mrange(N):
         barcode, readnum, altered = data[i]
         candidates = set()
         for c in levenshtein_neighbors(barcode,2):

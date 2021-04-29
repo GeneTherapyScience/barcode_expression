@@ -59,7 +59,6 @@ def levenshtein_distance(barcode0, barcode1, bound=None):
         prev = cur
         cur = [0]*(N+1)
         cur[-1] = m+1
-        print(prev, cur)
         for n in range(N):
             cur[n] = min(
                 prev[n-1] + int(barcode0[m]!='N' and barcode1[n]!='N' and barcode0[m]!=barcode1[n]),

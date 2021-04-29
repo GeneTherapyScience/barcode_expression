@@ -13,7 +13,7 @@ max_errors = 2
 ATGC = sorted(['A', 'T', 'G', 'C'])
 CGTA = ATGC[::-1]
 
-def levenshtein_neighbors(barcode, distance):
+def levenshtein_neighbors(barcode, distance, inserts=ATGC):
     if distance == 0:
         yield barcode
     else:
@@ -28,14 +28,14 @@ def levenshtein_neighbors(barcode, distance):
                 yield b[:i] + b[i+1:]
                 if b[i] == 'N':
                     continue
-                for n in ATGC:
+                for n in inserts:
                     if n != b[i]:
                         c = b[:i] + n + b[i+1:]
                         if not c in done:
                             done.add(c)
                             yield c
             for i in range(N+1):
-                for n in ATGC:
+                for n in inserts:
                     c = b[:i] + n + b[i:]
                     if not c in done:
                         done.add(c)
@@ -149,27 +149,33 @@ if __name__ == '__main__':
     merged_altered = defaultdict(int)
     for i in mrange(N):
         barcode, readnum, altered = data[i]
-        candidates = set()
-        for c in levenshtein_neighbors(barcode, max_errors):
-            for d in N_candidates(c):
-                if not d in candidates:
-                    candidates.add(d)
-                    if d in merged_barcodes:
-                        merged_readnum[d] += readnum
-                        merged_altered[d] += altered
-                        break
+        if not 'N' in barcode:
+            for c in levenshtein_neighbors(barcode, max_errors):
+                if c in merged_barcodes:
+                    merged_readnum[c] += readnum
+                    merged_altered[c] += altered
+                    break
             else:
-                continue
-            break
+                if args.reference:
+                    print('The sequence {} was not found in the reference.'.format(barcode), file=warningout)
+                else:
+                    merged_barcodes.add(barcode)
+                    merged_readnum[barcode] += readnum
+                    merged_altered[barcode] += altered
         else:
-            if args.reference:
-                print('The sequence {} was not found in the reference.'.format(barcode), file=warningout)
-            elif 'N' in barcode:
-                print('N-including barcode', barcode, 'has no parent array.', file=warningout)
+            for target in merged_barcodes:
+                if levenshtein_distance(barcode, target, max_errors) <= max_errors:
+                    merged_readnum[target] += readnum
+                    merged_altered[target] += altered
+                    break
             else:
-                merged_barcodes.add(barcode)
-                merged_readnum[barcode] += readnum
-                merged_altered[barcode] += altered
+                if args.reference:
+                    print('The sequence {} was not found in the reference.'.format(barcode), file=warningout)
+                else:
+                    print('N-including barcode', barcode, 'has no parent array.', file=warningout)
+                    merged_barcodes.add(barcode)
+                    merged_readnum[barcode] += readnum
+                    merged_altered[barcode] += altered
 
     print(header)
     for barcode in sorted(merged_barcodes):

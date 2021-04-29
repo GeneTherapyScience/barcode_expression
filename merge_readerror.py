@@ -113,16 +113,17 @@ if __name__ == '__main__':
     data.sort(key=lambda x: (x[0].count('N'), -x[1], x[0]))
     N = len(data)
 
-    merged_barcodes = set()
-    merged_readnum = defaultdict(int)
-    merged_altered = defaultdict(int)
     if args.reference:
         if os.path.exists(args.reference):
             merged_barcodes = readref(args.reference)
         else:
             print('Error: reference file "{}" does not exist.'.format(args.reference),
                   file=warningout)
+    else:
+        merged_barcodes = set()
 
+    merged_readnum = defaultdict(int)
+    merged_altered = defaultdict(int)
     for i in mrange(N):
         barcode, readnum, altered = data[i]
         candidates = set()

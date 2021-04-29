@@ -6,7 +6,7 @@ import os
 import sys
 import argparse
 from collections import defaultdict
-from tqdm import trange
+from tqdm import tqdm
 import time
 import shutil
 
@@ -128,10 +128,6 @@ if __name__ == '__main__':
         warningout = open(args.warningout, 'w')
     else:
         warningout = sys.stderr
-    if args.noprogress:
-        mrange = range
-    else:
-        mrange = trange
 
     header = input()
     data = []
@@ -169,7 +165,11 @@ if __name__ == '__main__':
 
     start_t = int(time.time())
     save_t = start_t + save_interval
-    for i in mrange(start_i, N):
+    if args.noprogress:
+        barcode_loop = range(start_i,N)
+    else:
+        barcode_loop = tqdm(range(start_i,N), total=N, initial=start_i)
+    for i in barcode_loop:
         if time.time() > save_t:
             save_t += save_interval
             if args.milestonefile:

@@ -151,7 +151,7 @@ if __name__ == '__main__':
     for i in mrange(N):
         barcode, readnum, altered = data[i]
         if barcode.count('N') <= expandN_bound:
-            for c in levenshtein_neighbors(barcode, max_errors, inserts=['N']):
+            for c in levenshtein_neighbors(barcode, max_errors):
                 for d in N_candidates(c):
                     if d in merged_barcodes:
                         merged_readnum[d] += readnum

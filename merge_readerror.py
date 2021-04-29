@@ -7,9 +7,12 @@ import sys
 import argparse
 from collections import defaultdict
 from tqdm import trange
+import time
+import shutil
 
 max_errors = 2
 expandN_bound = 2
+save_interval = 1800 # 30min
 
 ATGC = sorted(['A', 'T', 'G', 'C'])
 CGTA = ATGC[::-1]
@@ -117,6 +120,10 @@ if __name__ == '__main__':
                         help='file to output warnings.')
     parser.add_argument('-n', '--noprogress', action='store_true',
                         help='do not show a progress bar.')
+    parser.add_argument('-l', '--loadfile', default=None,
+                        help='file to load halfway results.')
+    parser.add_argument('-m', '--milestonefile', default=None,
+                        help='file to save halfway results.')
     args = parser.parse_args()
     if args.warningout:
         warningout = open(args.warningout, 'w')
@@ -148,7 +155,33 @@ if __name__ == '__main__':
 
     merged_readnum = defaultdict(int)
     merged_altered = defaultdict(int)
-    for i in mrange(N):
+    start_i = 0
+    if args.loadfile:
+        with open(args.loadfile) as f:
+            start_i = int(f.readline())
+            while True:
+                line = f.readline()
+                if not line: # EOF
+                    break
+                barcode, readnum, altered = line.split()
+                merged_barcodes.add(barcode)
+                merged_readnum[barcode] = int(readnum)
+                merged_altered[barcode] = int(altered)
+
+    start_t = int(time.time())
+    save_t = start_t + save_interval
+    for i in mrange(start_i, N):
+        if time.time() > save_t:
+            save_t += save_interval
+            if args.milestonefile:
+                tmpfile = args.milestonefile+'.tmp'
+                with open(tmpfile, 'w') as f:
+                    print(i, file=f)
+                    for barcode in sorted(merged_barcodes):
+                        readnum, altered = merged_readnum[barcode], merged_altered[barcode]
+                        print(barcode, readnum, altered, sep='\t', file=f)
+                shutil.move(tmpfile, args.milestonefile)
+
         barcode, readnum, altered = data[i]
         NN = barcode.count('N')
         if NN <= expandN_bound:

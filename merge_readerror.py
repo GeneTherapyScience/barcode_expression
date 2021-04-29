@@ -150,9 +150,14 @@ if __name__ == '__main__':
     merged_altered = defaultdict(int)
     for i in mrange(N):
         barcode, readnum, altered = data[i]
-        if barcode.count('N') <= expandN_bound:
+        NN = barcode.count('N')
+        if NN <= expandN_bound:
             for c in levenshtein_neighbors(barcode, max_errors):
-                for d in N_candidates(c):
+                if NN:
+                    loop = N_candidates(c)
+                else:
+                    loop = [c]
+                for d in loop:
                     if d in merged_barcodes:
                         merged_readnum[d] += readnum
                         merged_altered[d] += altered

@@ -58,6 +58,22 @@ def N_candidates(barcode):
                 for n in CGTA:
                     pool.append((n, i+1))
 
+def readref(referencefile):
+    ret = set()
+    with open(referencefile) as f:
+        f.readline() # drop header
+        while True:
+            line = f.readline()
+            if not line: # EOF
+                break
+            line = line.strip()
+            if line[0] == '#' or len(line)==0:
+                continue
+            else:
+                barcode = line.split()[0]
+                ret.add(barcode)
+    return ret
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--reference', default=None,
@@ -98,18 +114,7 @@ if __name__ == '__main__':
     merged_altered = defaultdict(int)
     if args.reference:
         if os.path.exists(args.reference):
-            with open(args.reference) as f:
-                f.readline() # drop header
-                while True:
-                    line = f.readline()
-                    if not line: # EOF
-                        break
-                    line = line.strip()
-                    if line[0] == '#' or len(line)==0:
-                        continue
-                    else:
-                        barcode = line.split()[0]
-                        merged_barcodes.add(barcode)
+            merged_barcodes = readref(args.reference)
         else:
             print('Error: reference file "{}" does not exist.'.format(args.reference),
                   file=warningout)

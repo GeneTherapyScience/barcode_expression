@@ -9,6 +9,7 @@ from collections import defaultdict
 from tqdm import trange
 
 max_errors = 2
+expandN_bound = 2
 
 ATGC = sorted(['A', 'T', 'G', 'C'])
 CGTA = ATGC[::-1]
@@ -149,16 +150,22 @@ if __name__ == '__main__':
     merged_altered = defaultdict(int)
     for i in mrange(N):
         barcode, readnum, altered = data[i]
-        if not 'N' in barcode:
-            for c in levenshtein_neighbors(barcode, max_errors):
-                if c in merged_barcodes:
-                    merged_readnum[c] += readnum
-                    merged_altered[c] += altered
-                    break
+        if barcode.count('N') <= expandN_bound:
+            for c in levenshtein_neighbors(barcode, max_errors, inserts=['N']):
+                for d in N_candidates(c):
+                    if d in merged_barcodes:
+                        merged_readnum[d] += readnum
+                        merged_altered[d] += altered
+                        break
+                else:
+                    continue
+                break
             else:
                 if args.reference:
                     print('The sequence {} was not found in the reference.'.format(barcode), file=warningout)
                 else:
+                    if 'N' in barcode:
+                        print('N-including barcode', barcode, 'has no parent array.', file=warningout)
                     merged_barcodes.add(barcode)
                     merged_readnum[barcode] += readnum
                     merged_altered[barcode] += altered

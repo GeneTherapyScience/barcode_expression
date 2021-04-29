@@ -114,11 +114,11 @@ if __name__ == '__main__':
     N = len(data)
 
     if args.reference:
-        if os.path.exists(args.reference):
+        try:
             merged_barcodes = readref(args.reference)
-        else:
-            print('Error: reference file "{}" does not exist.'.format(args.reference),
-                  file=warningout)
+        except Exception as e:
+            print(e, file=warningout)
+            exit()
     else:
         merged_barcodes = set()
 

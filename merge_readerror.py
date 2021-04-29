@@ -74,6 +74,17 @@ def readref(referencefile):
                 ret.add(barcode)
     return ret
 
+def readstdin():
+    while True:
+        try:
+            line = input().strip()
+            if len(line)==0 or line[0] == '#':
+                continue
+            else:
+                yield line
+        except EOFError:
+            break
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--reference', default=None,
@@ -94,18 +105,11 @@ if __name__ == '__main__':
 
     header = input()
     data = []
-    while True:
-        try:
-            line = input().strip()
-            if len(line)==0 or line[0] == '#':
-                continue
-            else:
-                barcode, readnum, altered = line.split()[:3]
-                readnum = 0 if readnum=='NA' else int(readnum)
-                altered = 0 if altered=='NA' else int(altered)
-                data.append((barcode, readnum, altered))
-        except EOFError:
-            break
+    for line in readstdin():
+        barcode, readnum, altered = line.split()[:3]
+        readnum = 0 if readnum=='NA' else int(readnum)
+        altered = 0 if altered=='NA' else int(altered)
+        data.append((barcode, readnum, altered))
     data.sort(key=lambda x: (x[0].count('N'), -x[1], x[0]))
     N = len(data)
 

@@ -45,6 +45,16 @@ def levenshtein_neighbors(barcode, distance, inserts=ATGC):
                         done.add(c)
                         yield c
 
+DNA_match_pairs = set()
+for b in 'ATGC':
+    DNA_match_pairs.add(b+b)
+for n in 'ATGCWSN':
+    DNA_match_pairs |= {'N'+n, n+'N'}
+for w in 'ATW':
+    DNA_match_pairs |= {'W'+w, w+'W'}
+for s in 'GCS':
+    DNA_match_pairs |= {'S'+s, s+'S'}
+
 def levenshtein_distance(barcode0, barcode1, bound=None):
     M, N = len(barcode0), len(barcode1)
     if bound is None:
@@ -61,7 +71,7 @@ def levenshtein_distance(barcode0, barcode1, bound=None):
         cur[-1] = m+1
         for n in range(N):
             cur[n] = min(
-                prev[n-1] + int(barcode0[m]!='N' and barcode1[n]!='N' and barcode0[m]!=barcode1[n]),
+                prev[n-1] + int(barcode0[m]+barcode1[n] not in DNA_match_pairs),
                 cur[n-1] + 1,
                 prev[n] + 1,
                 )

@@ -122,6 +122,24 @@ def inputdata():
     data.sort(key=lambda x: (x[0].count('N'), -x[1], x[0]))
     return header, data
 
+def load_halfway(loadfile):
+    halfway_barcodes = set()
+    halfway_readnum = defaultdict(int)
+    halfway_altered = defaultdict(int)
+    start_i = 0
+    if file:
+        with open(loadfile) as f:
+            start_i = int(f.readline())
+            while True:
+                line = f.readline()
+                if not line: # EOF
+                    break
+                barcode, readnum, altered = line.split()
+                halfway_barcodes.add(barcode)
+                halfway_readnum[barcode] = int(readnum)
+                halfway_altered[barcode] = int(altered)
+    return start_i, halfway_barcodes, halfway_readnum, halfway_altered
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--reference', default=None,
@@ -152,20 +170,8 @@ if __name__ == '__main__':
     else:
         merged_barcodes = set()
 
-    merged_readnum = defaultdict(int)
-    merged_altered = defaultdict(int)
-    start_i = 0
-    if args.loadfile:
-        with open(args.loadfile) as f:
-            start_i = int(f.readline())
-            while True:
-                line = f.readline()
-                if not line: # EOF
-                    break
-                barcode, readnum, altered = line.split()
-                merged_barcodes.add(barcode)
-                merged_readnum[barcode] = int(readnum)
-                merged_altered[barcode] = int(altered)
+    start_i, halfway_barcodes, merged_readnum, merged_altered = load_halfway(args.loadfile)
+    merged_barcodes |= halfway_barcodes
 
     start_t = int(time.time())
     save_t = start_t + save_interval

@@ -86,18 +86,19 @@ def N_candidates(barcode):
 
 def readref(referencefile):
     ret = set()
-    with open(referencefile) as f:
-        f.readline() # drop header
-        while True:
-            line = f.readline()
-            if not line: # EOF
-                break
-            line = line.strip()
-            if line[0] == '#' or len(line)==0:
-                continue
-            else:
-                barcode = line.split()[0]
-                ret.add(barcode)
+    if referencefile:
+        with open(referencefile) as f:
+            f.readline() # drop header
+            while True:
+                line = f.readline()
+                if not line: # EOF
+                    break
+                line = line.strip()
+                if line[0] == '#' or len(line)==0:
+                    continue
+                else:
+                    barcode = line.split()[0]
+                    ret.add(barcode)
     return ret
 
 def readstdin():
@@ -161,13 +162,8 @@ if __name__ == '__main__':
     header, data = inputdata()
     N = len(data)
 
-    if args.reference:
-        merged_barcodes = readref(args.reference)
-    else:
-        merged_barcodes = set()
-
     start_i, halfway_barcodes, merged_readnum, merged_altered = load_halfway(args.loadfile)
-    merged_barcodes |= halfway_barcodes
+    merged_barcodes = readref(args.reference) | halfway_barcodes
 
     start_t = int(time.time())
     save_t = start_t + save_interval

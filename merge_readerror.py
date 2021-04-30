@@ -12,7 +12,7 @@ import shutil
 
 max_errors = 2
 expandN_bound = 2
-save_interval = 1800 # 30min
+save_interval = 900 # 15min
 
 ATGC = sorted(['A', 'T', 'G', 'C'])
 CGTA = ATGC[::-1]

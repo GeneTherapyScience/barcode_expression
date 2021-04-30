@@ -111,6 +111,17 @@ def readstdin():
         except EOFError:
             break
 
+def inputdata():
+    header = input()
+    data = []
+    for line in readstdin():
+        barcode, readnum, altered = line.split()[:3]
+        readnum = 0 if readnum=='NA' else int(readnum)
+        altered = 0 if altered=='NA' else int(altered)
+        data.append((barcode, readnum, altered))
+    data.sort(key=lambda x: (x[0].count('N'), -x[1], x[0]))
+    return header, data
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--reference', default=None,
@@ -129,14 +140,7 @@ if __name__ == '__main__':
     else:
         warningout = sys.stderr
 
-    header = input()
-    data = []
-    for line in readstdin():
-        barcode, readnum, altered = line.split()[:3]
-        readnum = 0 if readnum=='NA' else int(readnum)
-        altered = 0 if altered=='NA' else int(altered)
-        data.append((barcode, readnum, altered))
-    data.sort(key=lambda x: (x[0].count('N'), -x[1], x[0]))
+    header, data = inputdata()
     N = len(data)
 
     if args.reference:

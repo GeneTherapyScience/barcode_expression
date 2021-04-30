@@ -141,6 +141,18 @@ def load_halfway(loadfile):
                 halfway_altered[barcode] = int(altered)
     return start_i, halfway_barcodes, halfway_readnum, halfway_altered
 
+def save_halfway(savefile, merged_barcodes, merged_readnum, merged_altered):
+    if not savefile:
+        return False
+    tmpfile = savefile+'.tmp'
+    with open(tmpfile, 'w') as f:
+        print(i, file=f)
+        for barcode in sorted(merged_barcodes):
+            readnum, altered = merged_readnum[barcode], merged_altered[barcode]
+            print(barcode, readnum, altered, sep='\t', file=f)
+    shutil.move(tmpfile, savefile)
+    return True
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--reference', default=None,
@@ -174,14 +186,7 @@ if __name__ == '__main__':
     for i in barcode_loop:
         if time.time() > save_t:
             save_t += save_interval
-            if args.milestonefile:
-                tmpfile = args.milestonefile+'.tmp'
-                with open(tmpfile, 'w') as f:
-                    print(i, file=f)
-                    for barcode in sorted(merged_barcodes):
-                        readnum, altered = merged_readnum[barcode], merged_altered[barcode]
-                        print(barcode, readnum, altered, sep='\t', file=f)
-                shutil.move(tmpfile, args.milestonefile)
+            save_halfway(args.milestonefile, merged_barcodes, merged_readnum, merged_altered)
 
         barcode, readnum, altered = data[i]
         NN = barcode.count('N')

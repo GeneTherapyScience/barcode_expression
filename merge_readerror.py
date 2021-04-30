@@ -162,11 +162,7 @@ if __name__ == '__main__':
     N = len(data)
 
     if args.reference:
-        try:
-            merged_barcodes = readref(args.reference)
-        except Exception as e:
-            print(e, file=warningout)
-            exit()
+        merged_barcodes = readref(args.reference)
     else:
         merged_barcodes = set()
 

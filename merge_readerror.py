@@ -14,7 +14,7 @@ max_errors = 2
 expandN_bound = 2
 save_interval = 900 # 15min
 
-ATGC = sorted(['A', 'T', 'G', 'C'])
+ATGC = sorted('ATGC')
 CGTA = ATGC[::-1]
 
 def levenshtein_neighbors(barcode, distance, inserts=ATGC):

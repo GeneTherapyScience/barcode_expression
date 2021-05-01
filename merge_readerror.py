@@ -135,7 +135,7 @@ def load_halfway(loadfile):
     halfway_readnum = defaultdict(int)
     halfway_altered = defaultdict(int)
     start_i = 0
-    if file:
+    if loadfile:
         with open(loadfile) as f:
             start_i = int(f.readline())
             for line in readlines(f):

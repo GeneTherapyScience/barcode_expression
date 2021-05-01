@@ -171,7 +171,7 @@ if __name__ == '__main__':
                         help='file to save halfway results.')
     args = parser.parse_args()
     if args.warningout:
-        warningout = open(args.warningout, 'w')
+        warningout = open(args.warningout, 'a')
     else:
         warningout = sys.stderr
 

@@ -94,15 +94,20 @@ def N_candidates(barcode):
                 for n in CGTA:
                     pool.append((n, i+1))
 
+def inputs(f=sys.stdin):
+    while True:
+        line = f.readline()
+        if not line: # EOF
+            break
+        else:
+            yield line
+
 def readref(referencefile):
     ret = set()
     if referencefile:
         with open(referencefile) as f:
             f.readline() # drop header
-            while True:
-                line = f.readline()
-                if not line: # EOF
-                    break
+            for line in inputs(f):
                 line = line.strip()
                 if line[0] == '#' or len(line)==0:
                     continue
@@ -111,21 +116,10 @@ def readref(referencefile):
                     ret.add(barcode)
     return ret
 
-def readstdin():
-    while True:
-        try:
-            line = input().strip()
-            if len(line)==0 or line[0] == '#':
-                continue
-            else:
-                yield line
-        except EOFError:
-            break
-
 def inputdata():
     header = input()
     data = []
-    for line in readstdin():
+    for line in inputs():
         barcode, readnum, altered = line.split()[:3]
         readnum = 0 if readnum=='NA' else int(readnum)
         altered = 0 if altered=='NA' else int(altered)
@@ -141,10 +135,7 @@ def load_halfway(loadfile):
     if file:
         with open(loadfile) as f:
             start_i = int(f.readline())
-            while True:
-                line = f.readline()
-                if not line: # EOF
-                    break
+            for line in readlines(f):
                 barcode, readnum, altered = line.split()
                 halfway_barcodes.add(barcode)
                 halfway_readnum[barcode] = int(readnum)

@@ -138,7 +138,7 @@ def load_halfway(loadfile):
     if loadfile:
         with open(loadfile) as f:
             start_i = int(f.readline())
-            for line in readlines(f):
+            for line in inputs(f):
                 barcode, readnum, altered = line.split()
                 halfway_barcodes.add(barcode)
                 halfway_readnum[barcode] = int(readnum)

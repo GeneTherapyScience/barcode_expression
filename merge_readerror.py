@@ -26,13 +26,13 @@ def levenshtein_neighbors(barcode, distance, inserts=ATGC):
             prev.append(b)
             yield b
         done = set(prev)
-        N = len(barcode)
         for b in prev:
+            N = len(b)
             for i in range(N):
                 c = b[:i] + b[i+1:]
                 if not c in done:
                     done.add(c)
-                    yield
+                    yield c
                 if b[i] == 'N':
                     continue
                 for n in inserts:

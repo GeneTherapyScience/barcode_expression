@@ -11,6 +11,7 @@ default_distance_bound = 2
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--distance', type=int, default=default_distance_bound)
 parser.add_argument('-n', '--number', type=int, default=Nsampling)
+parser.add_argument('--parent', action='store_true')
 args = parser.parse_args()
 Nsampling = args.number
 distance_bound = args.distance
@@ -24,8 +25,11 @@ for barcode, readnum, altered in data:
     else:
         parents.append((barcode, readnum, altered))
 
-interest = orphans
-# interest = parents
+if args.parent:
+    interest = parents
+else:
+    interest = orphans
+
 N = len(interest)
 interest_samples = [randrange(N) for _ in range(Nsampling)]
 results = []

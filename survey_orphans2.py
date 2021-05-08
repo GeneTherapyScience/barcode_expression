@@ -24,8 +24,8 @@ for barcode, readnum, altered in data:
     else:
         parents.append((barcode, readnum, altered))
 
-#interest = orphans
-interest = parents
+interest = orphans
+# interest = parents
 N = len(interest)
 interest_samples = [randrange(N) for _ in range(Nsampling)]
 results = []

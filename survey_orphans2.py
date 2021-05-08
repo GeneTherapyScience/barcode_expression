@@ -41,6 +41,7 @@ for i in trange(Nsampling):
     # print(min_d, barcode, parent, sep='\t')
     results.append((barcode, n, r))
 
+print('barcode', '#variations', '#reads', sep='\t')
 for barcode, n, r in results:
     print(barcode, n, r, sep='\t')
 print('Avarage', *[sum(x[i] for x in results)/Nsampling for i in [1,2]], sep='\t')

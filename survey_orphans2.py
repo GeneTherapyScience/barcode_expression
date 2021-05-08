@@ -6,7 +6,7 @@ from tqdm import tqdm, trange
 import argparse
 
 Nsampling = 10
-default_distance_bound = 5
+default_distance_bound = 2
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--distance', type=int, default=default_distance_bound)

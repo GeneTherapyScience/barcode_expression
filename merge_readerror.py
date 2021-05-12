@@ -119,8 +119,11 @@ def readref(referencefile):
                     ret.add(barcode)
     return ret
 
-def inputdata(f=sys.stdin):
-    header = f.readline().rstrip()
+def inputdata(f=sys.stdin, hasheader=True):
+    if hasheader:
+        header = f.readline().rstrip()
+    else:
+        header = None
     data = []
     for line in inputs(f):
         barcode, readnum, altered = line.split()[:3]

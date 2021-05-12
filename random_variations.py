@@ -10,22 +10,31 @@ spieces = 10**5
 cells = 2*(10**6)
 
 parser = argparse.ArgumentParser()
+parser.add_argument('-r', '--reference', default=None)
 parser.add_argument('-s', '--spieces', type=int, default=spieces)
 parser.add_argument('-c', '--cells', type=int, default=cells)
 args = parser.parse_args()
+reference = args.reference
 spieces = args.spieces
 cells = args.cells
 
-S = [0]*spieces
-for i in range(cells):
-    S[randrange(spieces)] += 1
+if reference:
+    with open(reference) as f:
+        header, data = inputdata(f)
+        spieces = len(data)
+        S = [record[1] for record in data]
+        cells = sum(S)
+else:
+    S = [0]*spieces
+    for i in range(cells):
+        S[randrange(spieces)] += 1
 Acc = [0]*(spieces)
 for i in range(spieces):
     Acc[i] = Acc[i-1] + S[i]
 
 R = [0]*spieces
 var = 0
-reads = [10**5, 3*(10**5), 10**6, 3*(10**6), 10**7, 3*(10**8), 10**8]
+reads = [10**5, 3*(10**5), 10**6, 3*(10**6), 65*(10**5), 10**7, 2*(10**7), 3*(10**7), 10**8]
 reads_set = set(reads)
 for i in range(1,reads[-1]+1):
     if i in reads_set:

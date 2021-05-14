@@ -176,6 +176,8 @@ if __name__ == '__main__':
                         help='file to save halfway results.')
     parser.add_argument('--noheader', action='store_true',
                         help='the input does not include header.')
+    parser.add_argument('--skipN', action='store_true',
+                        help='skip N-including barcodes.')
     args = parser.parse_args()
     if args.warningout:
         warningout = open(args.warningout, 'a')
@@ -201,7 +203,9 @@ if __name__ == '__main__':
 
         barcode, readnum, altered = data[i]
         NN = barcode.count('N')
-        if NN <= expandN_bound:
+        if NN > 0 and args.skipN:
+            pass
+        elif NN <= expandN_bound:
             for c in levenshtein_neighbors(barcode, max_errors):
                 if NN:
                     loop = N_candidates(c)

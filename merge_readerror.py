@@ -119,8 +119,8 @@ def readref(referencefile):
                     ret.add(barcode)
     return ret
 
-def inputdata(f=sys.stdin, hasheader=True):
-    if hasheader:
+def inputdata(f=sys.stdin, has_header=True):
+    if has_header:
         header = f.readline().rstrip()
     else:
         header = None
@@ -172,13 +172,17 @@ if __name__ == '__main__':
                         help='file to load halfway results.')
     parser.add_argument('-m', '--milestonefile', default=None,
                         help='file to save halfway results.')
+    parser.add_argument('-m', '--milestonefile', default=None,
+                        help='file to save halfway results.')
+    parser.add_argument('--noheader', action='store_true',
+                        help='the input does not include header.')
     args = parser.parse_args()
     if args.warningout:
         warningout = open(args.warningout, 'a')
     else:
         warningout = sys.stderr
 
-    header, data = inputdata()
+    header, data = inputdata(has_header=(not args.noheader))
     N = len(data)
 
     start_i, halfway_barcodes, merged_readnum, merged_altered = load_halfway(args.loadfile)
@@ -235,7 +239,8 @@ if __name__ == '__main__':
                     merged_readnum[barcode] += readnum
                     merged_altered[barcode] += altered
 
-    print(header)
+    if header:
+        print(header)
     for barcode in sorted(merged_barcodes):
         readnum, altered = merged_readnum[barcode], merged_altered[barcode]
         if readnum == 0:

@@ -172,8 +172,6 @@ if __name__ == '__main__':
                         help='file to load halfway results.')
     parser.add_argument('-m', '--milestonefile', default=None,
                         help='file to save halfway results.')
-    parser.add_argument('-m', '--milestonefile', default=None,
-                        help='file to save halfway results.')
     parser.add_argument('--noheader', action='store_true',
                         help='the input does not include header.')
     parser.add_argument('--skipN', action='store_true',

@@ -183,6 +183,8 @@ if __name__ == '__main__':
         warningout = sys.stderr
 
     header, data = inputdata(has_header=(not args.noheader))
+    if args.skipN:
+        data = list(filter(lambda record: (not 'N' in record[0]), data))
     N = len(data)
 
     start_i, halfway_barcodes, merged_readnum, merged_mutations = load_halfway(args.loadfile)
@@ -201,9 +203,7 @@ if __name__ == '__main__':
 
         barcode, readnum, mutations = data[i]
         NN = barcode.count('N')
-        if NN > 0 and args.skipN:
-            pass
-        elif NN <= expandN_bound:
+        if NN <= expandN_bound:
             for c in levenshtein_neighbors(barcode, max_errors):
                 if NN:
                     loop = N_candidates(c)

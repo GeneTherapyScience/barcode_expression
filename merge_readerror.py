@@ -126,37 +126,37 @@ def inputdata(f=sys.stdin, has_header=True):
         header = None
     data = []
     for line in inputs(f):
-        barcode, readnum, altered = line.split()[:3]
+        barcode, readnum, mutations = line.split()[:3]
         readnum = 0 if readnum=='NA' else int(readnum)
-        altered = 0 if altered=='NA' else int(altered)
-        data.append((barcode, readnum, altered))
+        mutations = 0 if mutations=='NA' else int(mutations)
+        data.append((barcode, readnum, mutations))
     data.sort(key=lambda x: (x[0].count('N'), -x[1], x[0]))
     return header, data
 
 def load_halfway(loadfile):
     halfway_barcodes = set()
     halfway_readnum = defaultdict(int)
-    halfway_altered = defaultdict(int)
+    halfway_mutations = defaultdict(int)
     start_i = 0
     if loadfile:
         with open(loadfile) as f:
             start_i = int(f.readline())
             for line in inputs(f):
-                barcode, readnum, altered = line.split()
+                barcode, readnum, mutations = line.split()
                 halfway_barcodes.add(barcode)
                 halfway_readnum[barcode] = int(readnum)
-                halfway_altered[barcode] = int(altered)
-    return start_i, halfway_barcodes, halfway_readnum, halfway_altered
+                halfway_mutations[barcode] = int(mutations)
+    return start_i, halfway_barcodes, halfway_readnum, halfway_mutations
 
-def save_halfway(savefile, merged_barcodes, merged_readnum, merged_altered):
+def save_halfway(savefile, merged_barcodes, merged_readnum, merged_mutations):
     if not savefile:
         return False
     tmpfile = savefile+'.tmp'
     with open(tmpfile, 'w') as f:
         print(i, file=f)
         for barcode in sorted(merged_barcodes):
-            readnum, altered = merged_readnum[barcode], merged_altered[barcode]
-            print(barcode, readnum, altered, sep='\t', file=f)
+            readnum, mutations = merged_readnum[barcode], merged_mutations[barcode]
+            print(barcode, readnum, mutations, sep='\t', file=f)
     shutil.move(tmpfile, savefile)
     return True
 
@@ -187,7 +187,7 @@ if __name__ == '__main__':
     header, data = inputdata(has_header=(not args.noheader))
     N = len(data)
 
-    start_i, halfway_barcodes, merged_readnum, merged_altered = load_halfway(args.loadfile)
+    start_i, halfway_barcodes, merged_readnum, merged_mutations = load_halfway(args.loadfile)
     merged_barcodes = readref(args.reference) | halfway_barcodes
 
     start_t = int(time.time())
@@ -199,9 +199,9 @@ if __name__ == '__main__':
     for i in barcode_loop:
         if time.time() > save_t:
             save_t += save_interval
-            save_halfway(args.milestonefile, merged_barcodes, merged_readnum, merged_altered)
+            save_halfway(args.milestonefile, merged_barcodes, merged_readnum, merged_mutations)
 
-        barcode, readnum, altered = data[i]
+        barcode, readnum, mutations = data[i]
         NN = barcode.count('N')
         if NN > 0 and args.skipN:
             pass
@@ -214,7 +214,7 @@ if __name__ == '__main__':
                 for d in loop:
                     if d in merged_barcodes:
                         merged_readnum[d] += readnum
-                        merged_altered[d] += altered
+                        merged_mutations[d] += mutations
                         break
                 else:
                     continue
@@ -227,12 +227,12 @@ if __name__ == '__main__':
                         print('N-including barcode', barcode, 'has no parent array.', file=warningout)
                     merged_barcodes.add(barcode)
                     merged_readnum[barcode] += readnum
-                    merged_altered[barcode] += altered
+                    merged_mutations[barcode] += mutations
         else:
             for target in merged_barcodes:
                 if levenshtein_distance(barcode, target, max_errors) <= max_errors:
                     merged_readnum[target] += readnum
-                    merged_altered[target] += altered
+                    merged_mutations[target] += mutations
                     break
             else:
                 if args.reference:
@@ -241,18 +241,18 @@ if __name__ == '__main__':
                     print('N-including barcode', barcode, 'has no parent array.', file=warningout)
                     merged_barcodes.add(barcode)
                     merged_readnum[barcode] += readnum
-                    merged_altered[barcode] += altered
+                    merged_mutations[barcode] += mutations
 
     if header:
         print(header)
     for barcode in sorted(merged_barcodes):
-        readnum, altered = merged_readnum[barcode], merged_altered[barcode]
+        readnum, mutations = merged_readnum[barcode], merged_mutations[barcode]
         if readnum == 0:
             ratio = 'NA'
-        elif altered == 0:
+        elif mutations == 0:
             ratio = 0
-        elif altered == readnum:
+        elif mutations == readnum:
             ratio = 1
         else:
-            ratio = altered / readnum
-        print(barcode, readnum, altered, ratio, sep='\t')
+            ratio = mutations / readnum
+        print(barcode, readnum, mutations, ratio, sep='\t')

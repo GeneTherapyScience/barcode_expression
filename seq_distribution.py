@@ -20,8 +20,8 @@ if __name__ == '__main__':
 
     header, data = inputdata()
     N = len(data)
-    count = defaultdict(int)
     if Npair > 0:
+        count = defaultdict(int)
         for _ in trange(Npair):
             while True:
                 m, n = randrange(N), randrange(N)
@@ -35,6 +35,7 @@ if __name__ == '__main__':
         for i in trange(Nsampling):
             m = interest_samples[i]
             barcode, readnum, _ = data[m]
+            count = defaultdict(int)
             for n in range(N):
                 if n != m:
                     count[levenshtein_distance(data[n][0], barcode)] += 1

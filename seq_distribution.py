@@ -14,11 +14,13 @@ if __name__ == '__main__':
                         help='give Nsampling.')
     parser.add_argument('-p', '--pairs', type=int, default=Npair,
                         help='give Nsampling.')
+    parser.add_argument('--noheader', action='store_true',
+                        help='the input does not include header.')
     args = parser.parse_args()
     Nsampling = args.nsampling
     Npair = args.pairs
 
-    header, data = inputdata()
+    header, data = inputdata(has_header=(not args.noheader))
     N = len(data)
     if Npair > 0:
         count = defaultdict(int)

@@ -176,11 +176,14 @@ if __name__ == '__main__':
                         help='the input does not include header.')
     parser.add_argument('--skipN', action='store_true',
                         help='skip N-including barcodes.')
+    parser.add_argument('--errors', action='store_true',
+                        help='output number of errors.')
     args = parser.parse_args()
     if args.warningout:
         warningout = open(args.warningout, 'a')
     else:
         warningout = sys.stderr
+    errors = 0
 
     header, data = inputdata(has_header=(not args.noheader))
     if args.skipN:
@@ -213,6 +216,8 @@ if __name__ == '__main__':
                     if d in merged_barcodes:
                         merged_readnum[d] += readnum
                         merged_mutations[d] += mutations
+                        if args.errors:
+                            errors += levenshtein_distance(c,d,max_errors)
                         break
                 else:
                     continue
@@ -228,9 +233,11 @@ if __name__ == '__main__':
                     merged_mutations[barcode] += mutations
         else:
             for target in merged_barcodes:
-                if levenshtein_distance(barcode, target, max_errors) <= max_errors:
+                distance = levenshtein_distance(barcode, target, max_errors)
+                if distance <= max_errors:
                     merged_readnum[target] += readnum
                     merged_mutations[target] += mutations
+                    errors += distance
                     break
             else:
                 if args.reference:
@@ -254,3 +261,5 @@ if __name__ == '__main__':
         else:
             ratio = mutations / readnum
         print(barcode, readnum, mutations, ratio, sep='\t')
+    if args.errors:
+        print('Read-errors:', errors, file=sys.stderr)

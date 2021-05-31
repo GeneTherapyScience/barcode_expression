@@ -217,7 +217,7 @@ if __name__ == '__main__':
                         merged_readnum[d] += readnum
                         merged_mutations[d] += mutations
                         if args.errors:
-                            errors += levenshtein_distance(c,d,max_errors)
+                            errors += levenshtein_distance(c,d,max_errors) * readnum
                         break
                 else:
                     continue
@@ -237,7 +237,8 @@ if __name__ == '__main__':
                 if distance <= max_errors:
                     merged_readnum[target] += readnum
                     merged_mutations[target] += mutations
-                    errors += distance
+                    if args.errors:
+                        errors += distance * readnum
                     break
             else:
                 if args.reference:
@@ -262,4 +263,5 @@ if __name__ == '__main__':
             ratio = mutations / readnum
         print(barcode, readnum, mutations, ratio, sep='\t')
     if args.errors:
+        print(file=sys.stderr)
         print('Read-errors:', errors, file=sys.stderr)

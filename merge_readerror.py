@@ -217,7 +217,7 @@ if __name__ == '__main__':
                         merged_readnum[d] += readnum
                         merged_mutations[d] += mutations
                         if args.errors:
-                            errors += levenshtein_distance(c,d,max_errors) * readnum
+                            errors += levenshtein_distance(d,barcode,max_errors) * readnum
                         break
                 else:
                     continue

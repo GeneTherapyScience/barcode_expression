@@ -126,6 +126,9 @@ def inputdata(f=sys.stdin, has_header=True):
         header = None
     data = []
     for line in inputs(f):
+        line = line.strip()
+        if not line:
+            continue
         record = line.split()
         if len(record) >= 3:
             barcode, readnum, mutations = record[:3]

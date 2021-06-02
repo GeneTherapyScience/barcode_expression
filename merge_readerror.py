@@ -126,7 +126,17 @@ def inputdata(f=sys.stdin, has_header=True):
         header = None
     data = []
     for line in inputs(f):
-        barcode, readnum, mutations = line.split()[:3]
+        record = line.split()
+        if len(record) >= 3:
+            barcode, readnum, mutations = record[:3]
+        elif len(record) == 2:
+            barcode, readnum = record
+            mutations = 0
+        else:
+            barcode = record[0]
+            readnum = 1
+            mutations = 0
+
         readnum = 0 if readnum=='NA' else int(readnum)
         mutations = 0 if mutations=='NA' else int(mutations)
         data.append((barcode, readnum, mutations))

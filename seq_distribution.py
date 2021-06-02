@@ -14,6 +14,8 @@ if __name__ == '__main__':
                         help='give Nsampling.')
     parser.add_argument('-p', '--pairs', type=int, default=Npair,
                         help='give Nsampling.')
+    parser.add_argument('-t', '--template', default=None,
+                        help='give template to compare with.')
     parser.add_argument('--noheader', action='store_true',
                         help='the input does not include header.')
     args = parser.parse_args()
@@ -22,7 +24,16 @@ if __name__ == '__main__':
 
     header, data = inputdata(has_header=(not args.noheader))
     N = len(data)
-    if Npair > 0:
+    if args.template:
+        count = defaultdict(int)
+        for i in trange(N):
+            barcode, readnum = data[i][:2]
+            count[levenshtein_distance(args.template, barcode)] += readnum
+        M = max(count.keys())
+        print('distance', 'reads', sep='\t')
+        for k in range(M+1):
+            print(k, count[k], sep='\t')
+    elif Npair > 0:
         count = defaultdict(int)
         for _ in trange(Npair):
             while True:

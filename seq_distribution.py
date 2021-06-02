@@ -35,7 +35,9 @@ if __name__ == '__main__':
                 mut, n = detail[seq]
                 detail[seq] = (mut, n+readnum)
             else:
-                detail[seq] = (count[levenshtein_distance(args.template, seq)], readnum)
+                mut = levenshtein_distance(args.template, seq)
+                detail[seq] = (mut, readnum)
+            count[mut] += readnum
         M = max(count.keys())
         print('distance', 'reads', sep='\t')
         for k in range(M+1):

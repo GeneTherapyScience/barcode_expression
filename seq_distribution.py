@@ -16,6 +16,8 @@ if __name__ == '__main__':
                         help='give Nsampling.')
     parser.add_argument('-t', '--template', default=None,
                         help='give template to compare with.')
+    parser.add_argument('-d', '--detail', default=None,
+                        help='give template to compare with.')
     parser.add_argument('--noheader', action='store_true',
                         help='the input does not include header.')
     args = parser.parse_args()
@@ -26,13 +28,23 @@ if __name__ == '__main__':
     N = len(data)
     if args.template:
         count = defaultdict(int)
+        detail = dict()
         for i in trange(N):
-            barcode, readnum = data[i][:2]
-            count[levenshtein_distance(args.template, barcode)] += readnum
+            seq, readnum = data[i][:2]
+            if seq in detail:
+                mut, n = detail[seq]
+                detail[seq] = (mut, n+readnum)
+            else:
+                detail[seq] = (count[levenshtein_distance(args.template, seq)], readnum)
         M = max(count.keys())
         print('distance', 'reads', sep='\t')
         for k in range(M+1):
             print(k, count[k], sep='\t')
+        if args.detail:
+            with open(args.detail, 'w') as f:
+                print('sequence', 'distance', 'reads', sep='\t', file=f)
+                for k, v in sorted(detail.items(), key=lambda x: (x[1],x[0])):
+                    print(k, v[0], v[1], sep='\t', file=f)
     elif Npair > 0:
         count = defaultdict(int)
         for _ in trange(Npair):

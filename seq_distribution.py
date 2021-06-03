@@ -1,5 +1,6 @@
 #!/user/bin/python3
 from merge_readerror import *
+from alignment import *
 from random import randrange
 from collections import Counter, defaultdict
 from tqdm import tqdm, trange
@@ -32,21 +33,20 @@ if __name__ == '__main__':
         for i in trange(N):
             seq, readnum = data[i][:2]
             if seq in detail:
-                mut, n = detail[seq]
-                detail[seq] = (mut, n+readnum)
+                detail[seq][2] += readnum
             else:
-                mut = levenshtein_distance(args.template, seq)
-                detail[seq] = (mut, readnum)
+                align, mut = seq_alignment(args.template, seq)
+                detail[seq] = [align, mut, readnum]
             count[mut] += readnum
-        M = max(count.keys())
-        print('distance', 'reads', sep='\t')
-        for k in range(M+1):
+        print('score', 'reads', sep='\t')
+        for k in sorted(count.values()):
             print(k, count[k], sep='\t')
         if args.detail:
             with open(args.detail, 'w') as f:
-                print('sequence', 'distance', 'reads', sep='\t', file=f)
-                for k, v in sorted(detail.items(), key=lambda x: (x[1],x[0])):
-                    print(k, v[0], v[1], sep='\t', file=f)
+                print('template:', args.template, file=f)
+                print('sequence', 'alignment', 'score', 'reads', sep='\t', file=f)
+                for k, v in sorted(detail.items(), key=lambda x: (x[1][1],-x[1][2],x[0])):
+                    print(k, *v, sep='\t', file=f)
     elif Npair > 0:
         count = defaultdict(int)
         for _ in trange(Npair):

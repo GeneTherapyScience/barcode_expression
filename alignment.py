@@ -14,7 +14,7 @@ match_letters = 'MXID'
 def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None):
     M, N = len(base), len(target)
     unit = 10000
-    epsilon = 1
+    epsilon = 0
     gap = int(gap*unit)
     extend = int(extend*unit) - epsilon
     substitution = int(substitution*unit)
@@ -33,22 +33,24 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
         cur[-1] = bound
         for n in range(N):
             base_match = int(base[m]+target[n] in DNA_match_pairs)
-            candidates = [
+            candidates = np.array([
                 prev[n-1] + (1-base_match)*bound,
                 prev[n-1] + substitution + base_match*bound,
                 cur[n-1] + gap, # new insertion
                 prev[n] + gap, # new deletion
-            ]
-            candidates[0][0] -= epsilon
-            candidates[2][2] += extend - gap # continue insertion
-            candidates[3][3] += extend - gap # delete insertion
-            k = [candidates[i].argmin() for i in range(4)]
+            ], dtype=int)
+            candidates[0,0] -= epsilon
+            candidates[2,2] += extend - gap # continue insertion
+            candidates[3,3] += extend - gap # delete insertion
+            k = 3 - candidates[:,::-1].argmin(axis=-1)
             parent[m,n] = np.array([[m-1,n-1,k[0]], [m-1,n-1,k[1]],[m,n-1,k[2]], [m-1,n,k[3]]], dtype=int)
             cur[n] = [candidates[i][k[i]] for i in range(4)]
+        # print(cur)
 
     m, n = M-1, N-1
-    i = cur[N-1].argmin()
-    print(cur[N-1][i]/substitution)
+    i = 3 - cur[N-1,::-1].argmin()
+    #️ print('i=', i)
+    # print(cur[N-1][i]/substitution)
     distance = round(cur[N-1][i]/substitution*10)/10
     backarr = []
     while m >= 0:
@@ -61,6 +63,8 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
 
 if __name__ == '__main__':
     base = 'GGTGGCTTTACCAACAGTAC'
+    #base = 'TT'
+    #target = 'TTT'
     # target = 'GATTCATCTCATCTATCAGAAAATAAATAAA'
     target = 'GGCTTTACCAACAGTAC'
     # target = 'GGTGGCTTTACCAACAGTAC'

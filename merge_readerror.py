@@ -64,14 +64,14 @@ def levenshtein_distance(barcode0, barcode1, bound=None):
         bound = M + N
     if M < N:
         M, N, barcode0, barcode1 = N, M, barcode1, barcode0
-    cur = list(range(1,N+1)) + [0]
+    cur = [bound]*N + [0]
     for m in range(M):
-        k = min(cur)
+        k = min(cur[:-1])
         if k > bound:
             return k
         prev = cur
         cur = [0]*(N+1)
-        cur[-1] = m+1
+        cur[-1] = bound
         for n in range(N):
             cur[n] = min(
                 prev[n-1] + int(barcode0[m]+barcode1[n] not in DNA_match_pairs),

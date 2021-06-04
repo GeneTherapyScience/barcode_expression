@@ -18,8 +18,9 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
     substitution = int(substitution*100)
     if bound is None:
         bound = (substitution+gap+extend)*(M+N+1)
-    prev = np.zeros((N+1,3), dtype=int)
-    cur = np.array([[i, bound, bound] for i in range(1,N+1)] + [(0,0,0)], dtype=int)
+    prev = np.zeros((N+1,3), dtype=int) # first cur
+    cur = np.ones((N+1,3), dtype=int) * bound # first prev
+    cur[-1][0] = 0
     # (normal, in-insertion, in-deletion)
     parent = np.zeros((M,N,3,3), dtype=int)
     for m in range(M):
@@ -27,8 +28,7 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
         if k > bound:
             return k
         cur, prev = prev, cur
-        cur[:] = 0
-        cur[-1] = (m+1, bound, bound)
+        cur[-1] = bound
         for n in range(N):
             candidates = [
                 prev[n-1] + int(base[m]+target[n] not in DNA_match_pairs)*substitution,

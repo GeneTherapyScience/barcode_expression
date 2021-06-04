@@ -31,7 +31,7 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
         cur[-1] = (m+1, bound, bound)
         for n in range(N):
             candidates = [
-                prev[n-1] + int(base[m]+target[n] not in DNA_match_pairs),
+                prev[n-1] + int(base[m]+target[n] not in DNA_match_pairs)*substitution,
                 np.array([
                     cur[n-1][0] + gap, # new insertion
                     cur[n-1][1] + extend, # continue insertion

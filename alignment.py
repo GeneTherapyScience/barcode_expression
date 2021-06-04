@@ -22,7 +22,7 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
         bound = (substitution+gap+extend)*(M+N+1)
     prev = np.zeros((N+1,4), dtype=int) # first cur
     cur = np.ones((N+1,4), dtype=int) * bound # first prev
-    cur[-1][0] = 0
+    cur[-1][1] = 0
     # (normal, in-insertion, in-deletion)
     parent = np.zeros((M,N,4,3), dtype=int)
     for m in range(M):
@@ -40,20 +40,21 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
                 prev[n] + gap, # new deletion
             ]
             candidates[0][0] -= epsilon
-            candidates[2][2] += extend - gap - epsilon # continue insertion
-            candidates[3][3] += extend - gap - epsilon # delete insertion
+            candidates[2][2] += extend - gap # continue insertion
+            candidates[3][3] += extend - gap # delete insertion
             k = [candidates[i].argmin() for i in range(4)]
             parent[m,n] = np.array([[m-1,n-1,k[0]], [m-1,n-1,k[1]],[m,n-1,k[2]], [m-1,n,k[3]]], dtype=int)
             cur[n] = [candidates[i][k[i]] for i in range(4)]
 
-        m, n = M-1, N-1
-        i = cur[N-1].argmin()
-        distance = round(cur[N-1][i]/substitution*10)/10
-        backarr = []
-        while m >= 0:
-            backarr.append(match_letters[i])
-            m, n, i = parent[m,n,i]
-        matchseq = ''.join(backarr[::-1])
+    m, n = M-1, N-1
+    i = cur[N-1].argmin()
+    print(cur[N-1][i]/substitution)
+    distance = round(cur[N-1][i]/substitution*10)/10
+    backarr = []
+    while m >= 0:
+        backarr.append(match_letters[i])
+        m, n, i = parent[m,n,i]
+    matchseq = ''.join(backarr[::-1])
 
     return matchseq, distance
 
@@ -62,6 +63,7 @@ if __name__ == '__main__':
     base = 'GGTGGCTTTACCAACAGTAC'
     # target = 'GATTCATCTCATCTATCAGAAAATAAATAAA'
     target = 'GGCTTTACCAACAGTAC'
+    # target = 'GGTGGCTTTACCAACAGTAC'
     alignment, score = seq_alignment(base, target)
     print('base:', base)
     print('target:', target)

@@ -10,19 +10,21 @@ for w in 'ATW':
 for s in 'GCS':
     DNA_match_pairs |= {'S'+s, s+'S'}
 
-match_letters = 'MIXD'
+match_letters = 'MXID'
 def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None):
     M, N = len(base), len(target)
-    gap = int(gap*100)
-    extend = int(extend*100)
-    substitution = int(substitution*100)
+    unit = 10000
+    epsilon = 1
+    gap = int(gap*unit)
+    extend = int(extend*unit) - epsilon
+    substitution = int(substitution*unit)
     if bound is None:
         bound = (substitution+gap+extend)*(M+N+1)
-    prev = np.zeros((N+1,3), dtype=int) # first cur
-    cur = np.ones((N+1,3), dtype=int) * bound # first prev
+    prev = np.zeros((N+1,4), dtype=int) # first cur
+    cur = np.ones((N+1,4), dtype=int) * bound # first prev
     cur[-1][0] = 0
     # (normal, in-insertion, in-deletion)
-    parent = np.zeros((M,N,3,3), dtype=int)
+    parent = np.zeros((M,N,4,3), dtype=int)
     for m in range(M):
         k = cur.min()
         if k > bound:
@@ -30,38 +32,26 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
         cur, prev = prev, cur
         cur[-1] = bound
         for n in range(N):
+            base_match = int(base[m]+target[n] in DNA_match_pairs)
             candidates = [
-                prev[n-1] + int(base[m]+target[n] not in DNA_match_pairs)*substitution,
-                np.array([
-                    cur[n-1][0] + gap, # new insertion
-                    cur[n-1][1] + extend, # continue insertion
-                    cur[n-1][2] + gap, # new insetion
-                ], dtype=int),
-                np.array([
-                    prev[n][0] + gap, # new deletion
-                    prev[n][1] + gap, # continue deletion
-                    prev[n][2] + extend, # new deletion
-                ], dtype=int),
+                prev[n-1] + (1-base_match)*bound,
+                prev[n-1] + substitution + base_match*bound,
+                cur[n-1] + gap, # new insertion
+                prev[n] + gap, # new deletion
             ]
-            k = [candidates[i].argmin() for i in range(3)]
-            parent[m,n] = np.array([[m-1,n-1,k[0]], [m,n-1,k[1]], [m-1,n,k[2]]], dtype=int)
-            cur[n] = [candidates[i][k[i]] for i in range(3)]
+            candidates[0][0] -= epsilon
+            candidates[2][2] += extend - gap - epsilon # continue insertion
+            candidates[3][3] += extend - gap - epsilon # delete insertion
+            k = [candidates[i].argmin() for i in range(4)]
+            parent[m,n] = np.array([[m-1,n-1,k[0]], [m-1,n-1,k[1]],[m,n-1,k[2]], [m-1,n,k[3]]], dtype=int)
+            cur[n] = [candidates[i][k[i]] for i in range(4)]
 
         m, n = M-1, N-1
         i = cur[N-1].argmin()
-        distance = cur[N-1][i]/substitution
+        distance = round(cur[N-1][i]/substitution*10)/10
         backarr = []
         while m >= 0:
-            if i == 0:
-                if base[m]+target[n] in DNA_match_pairs:
-                    match = 'M'
-                else:
-                    match = 'X'
-            elif i == 1:
-                match = 'I'
-            else:
-                match = 'D'
-            backarr.append(match)
+            backarr.append(match_letters[i])
             m, n, i = parent[m,n,i]
         matchseq = ''.join(backarr[::-1])
 
@@ -70,7 +60,8 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
 
 if __name__ == '__main__':
     base = 'GGTGGCTTTACCAACAGTAC'
-    target = 'GATTCATCTCATCTATCAGAAAATAAATAAA'
+    # target = 'GATTCATCTCATCTATCAGAAAATAAATAAA'
+    target = 'GGCTTTACCAACAGTAC'
     alignment, score = seq_alignment(base, target)
     print('base:', base)
     print('target:', target)

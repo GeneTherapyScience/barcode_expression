@@ -11,8 +11,8 @@ for s in 'GCS':
     DNA_match_pairs |= {'S'+s, s+'S'}
 
 match_letters = 'MXID'
-def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None):
-    M, N = len(base), len(target)
+def seq_alignment(template, target, gap=2.5, extend=0.5, substitution=1, bound=None):
+    M, N = len(template), len(target)
     unit = 10000
     epsilon = 0
     gap = int(gap*unit)
@@ -32,10 +32,10 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
         cur, prev = prev, cur
         cur[-1] = bound
         for n in range(N):
-            base_match = int(base[m]+target[n] in DNA_match_pairs)
+            template_match = int(template[m]+target[n] in DNA_match_pairs)
             candidates = np.array([
-                prev[n-1] + (1-base_match)*bound,
-                prev[n-1] + substitution + base_match*bound,
+                prev[n-1] + (1-template_match)*bound,
+                prev[n-1] + substitution + template_match*bound,
                 cur[n-1] + gap, # new insertion
                 prev[n] + gap, # new deletion
             ], dtype=int)
@@ -62,14 +62,14 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
 
 
 if __name__ == '__main__':
-    base = 'GGTGGCTTTACCAACAGTAC'
-    #base = 'TT'
+    template = 'GGTGGCTTTACCAACAGTAC'
+    #template = 'TT'
     #target = 'TTT'
     # target = 'GATTCATCTCATCTATCAGAAAATAAATAAA'
     target = 'GGCTTTACCAACAGTAC'
     # target = 'GGTGGCTTTACCAACAGTAC'
-    alignment, score = seq_alignment(base, target)
-    print('base:', base)
+    alignment, score = seq_alignment(template, target)
+    print('template:', template)
     print('target:', target)
     print('alignment:', alignment)
     print('score:', score)

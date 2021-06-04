@@ -39,7 +39,7 @@ if __name__ == '__main__':
                 detail[seq] = [align, mut, readnum]
             count[mut] += readnum
         print('score', 'reads', sep='\t')
-        for k in sorted(count.values()):
+        for k in sorted(count.keys()):
             print(k, count[k], sep='\t')
         if args.detail:
             with open(args.detail, 'w') as f:

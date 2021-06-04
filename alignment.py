@@ -18,6 +18,7 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
     substitution = int(substitution*100)
     if bound is None:
         bound = (substitution+gap+extend)*(M+N+1)
+    prev = np.zeros((N+1,3), dtype=int)
     cur = np.array([[i, bound, bound] for i in range(1,N+1)] + [(0,0,0)], dtype=int)
     # (normal, in-insertion, in-deletion)
     parent = np.zeros((M,N,3,3), dtype=int)
@@ -25,8 +26,8 @@ def seq_alignment(base, target, gap=2.5, extend=0.5, substitution=1, bound=None)
         k = cur.min()
         if k > bound:
             return k
-        prev = cur
-        cur = np.zeros((N+1,3), dtype=int)
+        cur, prev = prev, cur
+        cur[:] = 0
         cur[-1] = (m+1, bound, bound)
         for n in range(N):
             candidates = [

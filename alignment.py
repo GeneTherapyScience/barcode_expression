@@ -10,8 +10,7 @@ for w in 'ATW':
 for s in 'GCS':
     DNA_match_pairs |= {'S'+s, s+'S'}
 
-match_letters = 'MXID'
-def seq_alignment(template, target, gap=2.5, extend=0.5, substitution=1, bound=None):
+def seq_alignment(template, target, gap=2.5, extend=0.5, substitution=1, bound=None, match_letters = 'MXID'):
     M, N = len(template), len(target)
     unit = 10000
     epsilon = 0

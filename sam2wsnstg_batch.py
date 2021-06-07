@@ -41,8 +41,8 @@ if __name__ == '__main__':
         samfile_list = list_f.readlines()
 
     for samfile_name in samfile_list:
-        samfile_name = samfile_name.strip()
-        if (not samfile_name) or (samfile_name[0] in ['#']):
+        samfile_name = samfile_name.split('#')[0].strip()
+        if not samfile_name:
             continue
         else:
             print("Processing input-file '{}'....".format(samfile_name), file=sys.stderr)

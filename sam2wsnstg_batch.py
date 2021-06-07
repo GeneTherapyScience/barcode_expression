@@ -3,7 +3,7 @@ import sys
 import os
 from collections import defaultdict
 
-usage = "Usage : $ python sam2pairs_batch.py <listfile> <outdir>"
+usage = "Usage : $ python sam2wsnstg_batch.py <listfile> <outdir>"
 
 def inputs(f=sys.stdin):
     while True:

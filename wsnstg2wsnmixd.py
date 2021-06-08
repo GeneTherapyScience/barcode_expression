@@ -17,9 +17,15 @@ out_suffix = 'wsnmixd'
 def analyze_mixd(mixd):
     Is = []
     Ds = []
-    p = -1
+    p = 0
     i = d = 0
-    for s in mixd:
+    for s in mixd +'M':
+        if i > 0 and s != 'I':
+            Is.append((p,i))
+            i = 0
+        if d > 0 and d != 'D':
+            Ds.append((p-d+1,d))
+            d = 0
         if s == 'I':
             i += 1
         elif s == 'D':
@@ -27,13 +33,13 @@ def analyze_mixd(mixd):
             p += 1
         else:
             p += 1
-        if i > 0 and s != 'I':
-            Is.append((p,i))
-            i = 0
-        if d > 0 and d != 'D':
-            Ds.append((p-d,d))
-            d = 0
     return Is, Ds
+
+test = False
+if test:
+    target_mixd = 'MXMXXXMXMXIIMXMXMMMXMXIIIIIIIII'
+    print(analyze_mixd(target_mixd))
+    exit()
 
 if __name__ == '__main__':
     infile_namelist = sys.argv[1:]
@@ -46,7 +52,7 @@ if __name__ == '__main__':
     if not infile_namelist:
         infile_namelist.append(None)
 
-    letters = [chr(ord('a')+i) for i in range(20)] + ['z']
+    letters = ['z'] + [chr(ord('a')+i) for i in range(20)]
     for infile_name in infile_namelist:
         if infile_name is None:
             infile = sys.stdin
@@ -57,7 +63,7 @@ if __name__ == '__main__':
         stg2mixd = dict()
         reads = defaultdict(int)
         ins_num = [0]*21
-        del_num = [0]*20
+        del_num = [0]*21
         ins_len = [0]*31
         del_len = [0]*31
         header = infile.readline().rstrip('\n')
@@ -109,8 +115,8 @@ if __name__ == '__main__':
             print(r, wsn, mixd, distance, Istr, Dstr, sep='\t', file=outfile)
 
         print(infile_name)
-        print('ins at each position (0-20):', ins_num[-1:]+ins_num[:-1], sep='\t')
-        print('del at each position (1-20):', del_num[-1:]+del_num[:-1], sep='\t')
+        print('ins at each position (0-20):', ins_num, sep='\t')
+        print('del at each position (1-20):', del_num[1:], sep='\t')
         print('ins of each lengths: (1-30+)', ins_len[1:], sep='\t')
         print('del of each lengths: (1-30+)', del_len[1:], sep='\t')
 

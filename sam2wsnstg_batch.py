@@ -30,7 +30,7 @@ def sam2wsnstg(in_filename, out_filename):
             print(*k, v, sep='\t', file=out_f)
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         print(usage, file=sys.stderr)
         exit()
     else:

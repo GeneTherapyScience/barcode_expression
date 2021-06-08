@@ -23,7 +23,7 @@ def analyze_mixd(mixd):
         if i > 0 and s != 'I':
             Is.append((p,i))
             i = 0
-        if d > 0 and d != 'D':
+        if d > 0 and s != 'D':
             Ds.append((p-d+1,d))
             d = 0
         if s == 'I':
@@ -41,6 +41,7 @@ if test:
     stg_target = 'GATTCATCTCATCTATCAGAAAATAAATAAA'
     mixd, _ = seq_alignment(stg_template, stg_target)
     print(analyze_mixd(mixd))
+    print(analyze_mixd('MMDDDDDDDDDDDDDDDDDD'))
     exit()
 
 if __name__ == '__main__':

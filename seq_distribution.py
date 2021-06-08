@@ -1,4 +1,4 @@
-#!/user/bin/python3
+#!/user/bin/env python3
 from merge_readerror import *
 from alignment import *
 from random import randrange

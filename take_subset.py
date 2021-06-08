@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 from merge_readerror import *
 import numpy as np
 import argparse

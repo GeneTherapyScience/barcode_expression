@@ -1,4 +1,4 @@
-#!/user/bin/python3
+#!/user/bin/env python3
 from merge_readerror import *
 from random import randrange
 from collections import Counter, defaultdict

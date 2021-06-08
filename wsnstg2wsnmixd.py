@@ -2,6 +2,7 @@
 import sys
 import os
 from collections import defaultdict
+import re
 from alignment import seq_alignment
 from merge_readerror import inputs
 
@@ -10,8 +11,8 @@ Usage : $ python wsnstg2wsnmixd.py [--outdir=<outdir>] [<file1> <file2> ...]\
 """
 
 stg_template = "GGTGGCTTTACCAACAGTAC"
-in_suffix = '.wsnstg'
-out_suffix = '.wsnmixd'
+in_suffix = 'wsnstg'
+out_suffix = 'wsnmixd'
 
 def analyze_mixd(mixd):
     Is = []
@@ -93,7 +94,7 @@ if __name__ == '__main__':
         if infile != sys.stdin:
             infile.close()
             outfile_name = os.path.join(outdir,
-                os.path.basename(infile_name).rstrip(in_suffix) + out_suffix
+                re.sub('\.'+in_suffix+'$', '', os.path.basename(infile_name)) + '.' + out_suffix
                 )
             outfile = open(outfile_name, 'w')
         else:

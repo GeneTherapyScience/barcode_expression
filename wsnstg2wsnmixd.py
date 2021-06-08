@@ -35,10 +35,12 @@ def analyze_mixd(mixd):
             p += 1
     return Is, Ds
 
-test = False
+test = True
 if test:
-    target_mixd = 'MXMXXXMXMXIIMXMXMMMXMXIIIIIIIII'
-    print(analyze_mixd(target_mixd))
+    # target_mixd = 'MXMXXXMXMXIIMXMXMMMXMXIIIIIIIII'
+    stg_target = 'GATTCATCTCATCTATCAGAAAATAAATAAA'
+    mixd, _ = seq_alignment(stg_template, stg_target)
+    print(analyze_mixd(mixd))
     exit()
 
 if __name__ == '__main__':

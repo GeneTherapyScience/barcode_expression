@@ -35,7 +35,7 @@ def analyze_mixd(mixd):
             p += 1
     return Is, Ds
 
-test = True
+test = False
 if test:
     # target_mixd = 'MXMXXXMXMXIIMXMXMMMXMXIIIIIIIII'
     stg_target = 'GATTCATCTCATCTATCAGAAAATAAATAAA'

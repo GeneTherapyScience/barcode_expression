@@ -23,7 +23,7 @@ def sam2wsnstg(in_filename=None, out_filename=None):
         if line[0] == '@':
             continue
         record = line.split()
-        barcode = record[0].split("_TAG_")[-1]
+        barcode = record[0].split("_")[-1]
         stg = record[9]
         pairs[(barcode, stg)] += 1
 

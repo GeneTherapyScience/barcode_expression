@@ -17,22 +17,21 @@ def analyze_mixd(mixd):
     Is = []
     Ds = []
     p = -1
-    i = 0
-    d = 0
+    i = d = 0
     for s in mixd:
         if s == 'I':
             i += 1
-            d = 0
+        elif s == 'D':
+            d += 1
+            p += 1
         else:
             p += 1
-            if i > 0:
-                Is.append((p,i))
-                i = 0
-            if s == 'D':
-                d += 1
-            elif d > 0:
-                Ds.append((p-d,d))
-                d = 0
+        if i > 0 and s != 'I':
+            Is.append((p,i))
+            i = 0
+        if d > 0 and d != 'D':
+            Ds.append((p-d,d))
+            d = 0
     return Is, Ds
 
 if __name__ == '__main__':
@@ -106,7 +105,7 @@ if __name__ == '__main__':
             distance, Is, Ds = mixd_data[mixd]
             Istr = ''.join([letters[p]+str(i) for p, i in Is])
             Dstr = ''.join([letters[p]+str(d) for p, d in Ds])
-            print(r, wsn, mixd, distance, Is, Ds, sep='\t', file=outfile)
+            print(r, wsn, mixd, distance, Istr, Dstr, sep='\t', file=outfile)
 
         print(infile_name)
         print('ins at each position (0-20):', ins_num[-1:]+ins_num[:-1], sep='\t')

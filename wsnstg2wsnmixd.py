@@ -114,8 +114,8 @@ if __name__ == '__main__':
         print(infile_name)
         print('ins at each position (0-20):', ins_num, sep='\t')
         print('del at each position (1-20):', del_num[1:], sep='\t')
-        print('ins of each lengths: (1-30+)', ins_len[1:], sep='\t')
-        print('del of each lengths: (1-30+)', del_len[1:], sep='\t')
+        print('ins of each lengths (1-30+):', ins_len[1:], sep='\t')
+        print('del of each lengths (1-30+):', del_len[1:], sep='\t')
 
         if outfile != sys.stdout:
             outfile.close()

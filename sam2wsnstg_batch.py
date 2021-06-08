@@ -13,21 +13,33 @@ def inputs(f=sys.stdin):
         else:
             yield line
 
-def sam2wsnstg(in_filename, out_filename):
-    with open(in_filename) as in_f:
-        pairs = defaultdict(int)
-        for line in inputs(in_f):
-            if line[0] == '@':
-                continue
-            record = line.split()
-            barcode = record[0].split("_TAG_")[-1]
-            stg = record[9]
-            pairs[(barcode, stg)] += 1
+def sam2wsnstg(in_filename=None, out_filename=None):
+    if in_filename is None:
+        in_f = sys.stdin
+    else:
+        in_f = open(in_filename)
+    pairs = defaultdict(int)
+    for line in inputs(in_f):
+        if line[0] == '@':
+            continue
+        record = line.split()
+        barcode = record[0].split("_TAG_")[-1]
+        stg = record[9]
+        pairs[(barcode, stg)] += 1
 
-    with open(out_filename, "w") as out_f:
-        print("WSN", "stg", "reads", sep="\t", file=out_f)
-        for k, v in sorted(pairs.items(), key=lambda x: (x[0][0], -x[1], x[0][1])):
-            print(*k, v, sep='\t', file=out_f)
+    if in_f != sys.stdin:
+        in_f.close()
+
+    if out_filename is None:
+        out_f = sys.stdout
+    else:
+        out_f = open(out_filename, "w")
+    print("WSN", "stg", "reads", sep="\t", file=out_f)
+    for k, v in sorted(pairs.items(), key=lambda x: (x[0][0], -x[1], x[0][1])):
+        print(*k, v, sep='\t', file=out_f)
+
+    if out_f != sys.stdout:
+        out_f.close()
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:

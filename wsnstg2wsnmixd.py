@@ -86,13 +86,7 @@ if __name__ == '__main__':
                 ins_len[i] += r
             for p, d in Ds:
                 for x in range(p, p+d):
-                    try:
-                        del_num[x] += r
-                    except:
-                        print('error')
-                        print('mixd', mixd)
-                        print(x,p,d)
-                        exit()
+                    del_num[x] += r
                 if d > 30:
                     d = 30
                 del_len[d] += r

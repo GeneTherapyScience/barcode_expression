@@ -117,6 +117,7 @@ if __name__ == '__main__':
             print(r, wsn, mixd, distance, Istr, Dstr, sep='\t', file=outfile)
 
         print(infile_name, file=infofile)
+        print('Total reads:', sum(distance_num), file=infofile)
         print('2x distance from original (0-40+):', distance_num, sep='\t', file=infofile)
         print('ins at each position (0-20):', ins_num, sep='\t', file=infofile)
         print('del at each position (1-20):', del_num[1:], sep='\t', file=infofile)

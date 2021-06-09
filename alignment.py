@@ -1,6 +1,8 @@
 import numpy as np
 
 DNA_match_pairs = set()
+# for i in range(26):
+#    b = chr(ord('A')+i)
 for b in 'ATGC':
     DNA_match_pairs.add(b+b)
 for n in 'ATGCWSN':
@@ -69,6 +71,8 @@ def seq_distance(template, target, gap=2.5, extend=0.5, substitution=1, bound=No
     if bound is None:
         bound = (substitution+gap+extend)*(M+N+1)
     prev = [[0]*3 for _ in range(N+1)] # first cur
+    for i in range(3):
+        prev[-1][i] = bound
     cur = [[bound]*3 for _ in range(N+1)] # first prev
     cur[-1][0] = 0
     # (normal, in-insertion, in-deletion)
@@ -77,9 +81,8 @@ def seq_distance(template, target, gap=2.5, extend=0.5, substitution=1, bound=No
         k = min(map(min,prev))
         if k > bound:
             return k
-        if m < 2:
-            for i in range(3):
-                cur[-1][i] = bound
+        if m == 1:
+            cur[-1][0] = bound
         for n in range(N):
             template_match = int(template[m]+target[n] in DNA_match_pairs)
             cur[n] = [
@@ -93,7 +96,6 @@ def seq_distance(template, target, gap=2.5, extend=0.5, substitution=1, bound=No
             ]
         # print(cur)
     distance = round(min(cur[N-1])/substitution, 1)
-
     return distance
 
 
@@ -117,7 +119,7 @@ if __name__ == '__main__':
     from merge_readerror import levenshtein_distance
 
     print(seq_distance(template, target))
-    # print(fast_distance('AGCTAT','AGC'))    
+    # print(seq_distance('AGCTAT','AGC'))    
     # exit()
 
     start = time.time()

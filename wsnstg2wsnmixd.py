@@ -70,6 +70,8 @@ if __name__ == '__main__':
         del_num = [0]*21
         ins_len = [0]*31
         del_len = [0]*31
+        distance_x2_max = 40
+        distance_num = [0]*(distance_x2_max + 1)
         header = infile.readline().rstrip('\n')
         for line in inputs(infile):
             wsn, stg, r = line.split()
@@ -80,20 +82,17 @@ if __name__ == '__main__':
                 mixd, distance = seq_alignment(stg_template, stg)
                 stg2mixd[stg] = (mixd, distance)
             reads[(wsn, mixd)] += r
+            distance_num[min(int(distance*2), distance_x2_max)] += r
             if mixd not in mixd_data:
                 mixd_data[mixd] = (distance,) + analyze_mixd(mixd)
             _, Is, Ds = mixd_data[mixd]
             for p, i in Is:
                 ins_num[p] += i*r
-                if i > 30:
-                    i = 30
-                ins_len[i] += r
+                ins_len[min(i,30)] += r
             for p, d in Ds:
                 for x in range(p, p+d):
                     del_num[x] += r
-                if d > 30:
-                    d = 30
-                del_len[d] += r
+                del_len[min(d,30)] += r
 
         if infile != sys.stdin:
             infile.close()
@@ -118,10 +117,11 @@ if __name__ == '__main__':
             print(r, wsn, mixd, distance, Istr, Dstr, sep='\t', file=outfile)
 
         print(infile_name, file=infofile)
+        print('2x distance from original (0-40+):', distance_num, sep='\t', file=infofile)
         print('ins at each position (0-20):', ins_num, sep='\t', file=infofile)
         print('del at each position (1-20):', del_num[1:], sep='\t', file=infofile)
         print('ins of each lengths (1-30+):', ins_len[1:], sep='\t', file=infofile)
-        print('del of each lengths (1-30+):', del_len[1:], sep='\t', file=infofile)
+        print('del of each lengths (1-20):', del_len[1:21], sep='\t', file=infofile)
 
         if outfile != sys.stdout:
             outfile.close()

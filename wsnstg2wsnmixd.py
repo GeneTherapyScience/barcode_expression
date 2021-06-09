@@ -13,6 +13,7 @@ Usage : $ python wsnstg2wsnmixd.py [--outdir=<outdir>] [<file1> <file2> ...]\
 stg_template = "GGTGGCTTTACCAACAGTAC"
 in_suffix = 'wsnstg'
 out_suffix = 'wsnmixd'
+info_suffix = 'indelinfo'
 
 def analyze_mixd(mixd):
     Is = []
@@ -99,9 +100,14 @@ if __name__ == '__main__':
             outfile_name = os.path.join(outdir,
                 re.sub('\.'+in_suffix+'$', '', os.path.basename(infile_name)) + '.' + out_suffix
                 )
+            infofile_name = os.path.join(outdir,
+                re.sub('\.'+in_suffix+'$', '', os.path.basename(infile_name)) + '.' + info_suffix
+                )
             outfile = open(outfile_name, 'w')
+            infofile = open(infofile_name, 'w')
         else:
             outfile = sys.stdout
+            infofile = sys.stdout
 
         print('# reads', 'wsn', 'mixd', 'distance', 'ins', 'del', file=outfile)
         for pair, r in sorted(reads.items(), key=lambda x: (-x[1], x[0][0], mixd_data[x[0][1]][0], x[0][1])):
@@ -111,11 +117,12 @@ if __name__ == '__main__':
             Dstr = ''.join([letters[p]+str(d) for p, d in Ds])
             print(r, wsn, mixd, distance, Istr, Dstr, sep='\t', file=outfile)
 
-        print(infile_name)
-        print('ins at each position (0-20):', ins_num, sep='\t')
-        print('del at each position (1-20):', del_num[1:], sep='\t')
-        print('ins of each lengths (1-30+):', ins_len[1:], sep='\t')
-        print('del of each lengths (1-30+):', del_len[1:], sep='\t')
+        print(infile_name, file=infofile)
+        print('ins at each position (0-20):', ins_num, sep='\t', file=infofile)
+        print('del at each position (1-20):', del_num[1:], sep='\t', file=infofile)
+        print('ins of each lengths (1-30+):', ins_len[1:], sep='\t', file=infofile)
+        print('del of each lengths (1-30+):', del_len[1:], sep='\t', file=infofile)
 
         if outfile != sys.stdout:
             outfile.close()
+            infofile.close()

@@ -15,6 +15,21 @@ out_suffix = 'mutinfo'
 
 threshold_share = 10**(-5)
 
+def wsn_thres(A, ratio=threshold_share):
+    A = sorted(A)
+    S = sum(A)
+    prev = 0
+    for a in A:
+        if a == prev:
+            S -= a
+        elif a < S*ratio:
+            S -= a
+            prev = a
+        else:
+            return a
+    else:
+        return a
+
 def inputs(f=sys.stdin):
     while True:
         line = f.readline()
@@ -100,15 +115,8 @@ if __name__ == '__main__':
             output[5].extend([round(Sd/mutread, 3), ''])
 
             if i == 0:
-                sorted_wsn = sorted(wsn_read.keys(), key=lambda x: -wsn_read[x])
-                prev = 0
-                while sorted_wsn and wsn_read[sorted_wsn[-1]] < totalread*threshold_share:
-                    prev = wsn_read[sorted_wsn.pop()]
-                    totalread -= prev
-                while sorted_wsn and sorted_wsn[-1] == prev:
-                    sorted_wsn.pop()
-                surviving_wsn = set(sorted_wsn)
-
+                th = wsn_thres(wsn_read.values())
+                surviving_wsn = {wsn for wsn, r in wsn_read.items() if r>=th}
         for line in output:
             print(*line, sep='\t', file=outfile)
 

@@ -14,9 +14,10 @@ wsn_thres <- function(A, ratio=10^(-5)) {
 			return(a)
 		}
 	}
-	return(A[length(A)])
+	return(a)
 }
 
 V <- c(1,4,1,5,25,20,1,1,1,3,1,2,2,2,1,1)
+# V = c(1,1,1,1)
 r <- 0.1
 print(wsn_thres(V,r))

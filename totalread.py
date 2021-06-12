@@ -1,4 +1,4 @@
-#!/user/bin/python3
+#!/user/bin/env python
 from merge_readerror import *
 import argparse
 

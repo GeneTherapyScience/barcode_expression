@@ -30,6 +30,15 @@ def wsn_thres(A, ratio=threshold_share):
     else:
         return a
 
+def get_distance_dictionary(dict_filename):
+    distance_dict = dict()
+    with open(dict_filename) as f:
+        for line in inputs(f):
+            stg, mixd, d = line.split()
+            d = float(d)
+            distance_dict[stg] = d
+    return distance_dict
+
 def inputs(f=sys.stdin):
     while True:
         line = f.readline()
@@ -49,12 +58,7 @@ if __name__ == '__main__':
 
     if dictionary is None:
         print('Give --dictionary.', file=sys.stderr)
-    distance_dict = dict()
-    with open(dictionary) as f:
-        for line in inputs(f):
-            stg, mixd, d = line.split()
-            d = float(d)
-            distance_dict[stg] = d
+    distance_dict = get_distance_dictionary(dictionary)
 
     infile_namelist = args[1:]
     if not infile_namelist:

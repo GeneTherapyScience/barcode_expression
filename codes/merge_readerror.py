@@ -296,7 +296,7 @@ if __name__ == '__main__':
                 for d in loop:
                     if d in merged_barcodes:
                         if barcode != d:
-                            print('Merged', barcode, 'as', d, sep='\t', file=warningout)
+                            print('Merge', barcode, 'as', d, sep='\t', file=warningout)
                             uf.merge(d, barcode)
                             if (not args.reference) and args.union:
                                 merged_barcodes.add(barcode)
@@ -343,6 +343,7 @@ if __name__ == '__main__':
         for barcode in merged_barcodes:
             root = uf.root(barcode)
             if root != barcode:
+                print('Merge', barcode, 'as', root, sep='\t', file=warningout)
                 merged_readnum[root] += merged_readnum[barcode]
                 merged_mutations[root] += merged_mutations[barcode]
                 del merged_readnum[barcode], merged_mutations[barcode]

@@ -187,7 +187,7 @@ class UnionFind:
 
     def root(self, n):
         stack = []
-        while n >= 0:
+        while not (isinstance(n, int) and n < 0):
             stack.append(n)
             n = self.parent[n]
         m = stack.pop()

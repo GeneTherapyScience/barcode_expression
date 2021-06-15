@@ -229,6 +229,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--reference', default=None,
                         help='give reference barcodes.')
+    parser.add_argument('--refgroup', default=None,
+                        help='give reference groups.')
     parser.add_argument('-w', '--warningout', default=None,
                         help='file to output warnings.')
     parser.add_argument('-u', '--union', default=None,
@@ -262,6 +264,15 @@ if __name__ == '__main__':
     start_i, halfway_barcodes, merged_readnum, merged_mutations = load_halfway(args.loadfile)
     merged_barcodes = readref(args.reference) | halfway_barcodes
     uf = UnionFind()
+    if args.refgroup:
+        with open(args.refgroup) as f:
+            for line in inputs(f):
+                g = line.split()
+                p = g[0]
+                merged_barcodes.add(p)
+                for c in g[1:]:
+                    uf.merge(p, c)
+                    merged_barcodes.add(c)
 
     start_t = int(time.time())
     save_t = start_t + save_interval

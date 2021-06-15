@@ -251,7 +251,7 @@ if __name__ == '__main__':
                         help='output number of errors.')
     args = parser.parse_args()
     if args.warningout:
-        warningout = open(args.warningout, 'a')
+        warningout = open(args.warningout, 'w')
     else:
         warningout = sys.stderr
     errors = 0

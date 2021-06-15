@@ -300,11 +300,13 @@ if __name__ == '__main__':
                             uf.merge(d, barcode)
                             if (not args.reference) and args.union:
                                 merged_barcodes.add(barcode)
-                        merged_readnum[d] += readnum
-                        merged_mutations[d] += mutations
+                        td = uf.root(d) if args.union else d
+                        merged_readnum[td] += readnum
+                        merged_mutations[td] += mutations
                         if args.errors:
                             errors += levenshtein_distance(d,barcode,max_errors) * readnum
-                        break
+                        if not args.union:
+                            break
                 else:
                     continue
                 break
@@ -337,7 +339,14 @@ if __name__ == '__main__':
 
     if header:
         print(header)
-    for barcode in sorted(merged_barcodes):
+    if args.union:
+        for barcode in merged_barcodes:
+            root = uf.root(barcode)
+            if root != barcode:
+                merged_readnum[root] += merged_readnum[barcode]
+                merged_mutations[root] += merged_mutations[barcode]
+                del merged_readnum[barcode], merged_mutations[barcode]
+    for barcode in sorted(merged_readnum.keys()):
         readnum, mutations = merged_readnum[barcode], merged_mutations[barcode]
         if readnum == 0:
             ratio = 'NA'

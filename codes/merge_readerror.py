@@ -178,12 +178,63 @@ def save_halfway(savefile, merged_barcodes, merged_readnum, merged_mutations):
     shutil.move(tmpfile, savefile)
     return True
 
+class UnionFind:
+    def __init__(self, N=None):
+        if N is None or N < 1:
+            self.parent = defaultdict(lambda: -1)
+        else:
+            self.parent = [-1]*int(N)
+
+    def root(self, n):
+        stack = []
+        while n >= 0:
+            stack.append(n)
+            n = self.parent[n]
+        m = stack.pop()
+        while stack:
+            self.parent[stack.pop()] = m
+        return m
+
+    def merge(self, m, n):
+        rm = self.root(m)
+        rn = self.root(n)
+        if rm != rn:
+            if -self.parent[rm] < -self.parent[rn] and rm != m: # if m is root, it remains root after merge.
+                rm, rn = rn, rm
+            self.parent[rm] += self.parent[rn]
+            self.parent[rn] = rm
+
+    def size(self, n):
+        return -self.parent[self.root(n)]
+    
+    def connected(self, m, n):
+        return self.root(m) == self.root(n)
+
+    def groups(self):
+        if isinstance(self.parent,list):
+            return list(filter(lambda i: self.parent[i]<0, range(len(self.parent))))
+        else: # self.parent: defaultdict
+            return list(filter(lambda i: self.parent[i]<0, self.parent.keys()))
+ 
+    def groups_num(self):
+        return len(self.groups())
+
+    def elements(self):
+        if isinstance(self.parent,list):
+            return range(len(self.parent))
+        else:
+            return self.parent.keys()
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--reference', default=None,
                         help='give reference barcodes.')
     parser.add_argument('-w', '--warningout', default=None,
                         help='file to output warnings.')
+    parser.add_argument('-u', '--union', default=None,
+                        help='pack all relatives by union-find algorithm.')
+    parser.add_argument('-g', '--groupout', default=None,
+                        help='file to output groups of merged relatives.')
     parser.add_argument('-n', '--noprogress', action='store_true',
                         help='do not show a progress bar.')
     parser.add_argument('-l', '--loadfile', default=None,
@@ -210,6 +261,7 @@ if __name__ == '__main__':
 
     start_i, halfway_barcodes, merged_readnum, merged_mutations = load_halfway(args.loadfile)
     merged_barcodes = readref(args.reference) | halfway_barcodes
+    uf = UnionFind()
 
     start_t = int(time.time())
     save_t = start_t + save_interval
@@ -234,6 +286,9 @@ if __name__ == '__main__':
                     if d in merged_barcodes:
                         if barcode != d:
                             print('Merged', barcode, 'as', d, sep='\t', file=warningout)
+                            uf.merge(d, barcode)
+                            if (not args.reference) and args.union:
+                                merged_barcodes.add(barcode)
                         merged_readnum[d] += readnum
                         merged_mutations[d] += mutations
                         if args.errors:
@@ -282,6 +337,19 @@ if __name__ == '__main__':
         else:
             ratio = mutations / readnum
         print(barcode, readnum, mutations, ratio, sep='\t')
+
+    if args.groupout:
+        groups = defaultdict(list)
+        for barcode in uf.elements():
+            root = uf.root(barcode)
+            if root == barcode:
+                groups[root]
+            else:
+                groups[root].append(barcode)
+        with open(args.groupout, 'w') as gout:
+            for p, c in groups.items():
+                print(p, *c, sep='\t', file=gout)
+
     if args.errors:
         print(file=sys.stderr)
         print('Read-errors:', errors, file=sys.stderr)

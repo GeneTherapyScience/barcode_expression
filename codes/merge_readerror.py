@@ -227,6 +227,8 @@ if __name__ == '__main__':
                     loop = [c]
                 for d in loop:
                     if d in merged_barcodes:
+                        if barcode != d:
+                            print('Merged', barcode, 'as', d, sep='\t', file=warningout)
                         merged_readnum[d] += readnum
                         merged_mutations[d] += mutations
                         if args.errors:
@@ -237,7 +239,7 @@ if __name__ == '__main__':
                 break
             else:
                 if args.reference:
-                    print('The sequence {} was not found in the reference.'.format(barcode), file=warningout)
+                    print('Not found in the reference:', barcode, sep='\t', file=warningout)
                 else:
                     if 'N' in barcode:
                         print('N-including barcode', barcode, 'has no parent array.', file=warningout)

@@ -17,15 +17,20 @@ save_interval = 900 # 15min
 ATGC = sorted('ATGC')
 CGTA = ATGC[::-1]
 
-def levenshtein_neighbors(barcode, distance, inserts=ATGC):
-    if distance == 0:
+def levenshtein_neighbors(barcode, distance, inserts=ATGC, min_distance=0):
+    if distance == 0 and min_distance <= 0:
         yield barcode
     else:
         prev = list()
+        done = set()
+        if min_distance > 0:
+            for b in levenshtein_neighbors(barcode, min_distance-1):
+                done.add(b)
         for b in levenshtein_neighbors(barcode, distance-1):
-            prev.append(b)
-            yield b
-        done = set(prev)
+            if b not in done:
+                prev.append(b)
+                done.add(b)
+                yield b
         for b in prev:
             N = len(b)
             for i in range(N):

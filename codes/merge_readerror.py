@@ -233,7 +233,7 @@ if __name__ == '__main__':
                         help='give reference groups.')
     parser.add_argument('-w', '--warningout', default=None,
                         help='file to output warnings.')
-    parser.add_argument('-u', '--union', default=None,
+    parser.add_argument('-u', '--union', action='store_true',
                         help='pack all relatives by union-find algorithm.')
     parser.add_argument('-g', '--groupout', default=None,
                         help='file to output groups of merged relatives.')

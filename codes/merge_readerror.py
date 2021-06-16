@@ -288,6 +288,7 @@ if __name__ == '__main__':
         barcode, readnum, mutations = data[i]
         NN = barcode.count('N')
         if NN <= expandN_bound:
+            hit = False
             for c in levenshtein_neighbors(barcode, max_errors):
                 if NN:
                     loop = N_candidates(c)
@@ -300,9 +301,11 @@ if __name__ == '__main__':
                             uf.merge(d, barcode)
                             if (not args.reference) and args.union:
                                 merged_barcodes.add(barcode)
-                        td = uf.root(d) if args.union else d
-                        merged_readnum[td] += readnum
-                        merged_mutations[td] += mutations
+                        if not hit:
+                            td = uf.root(d) if args.union else d
+                            merged_readnum[td] += readnum
+                            merged_mutations[td] += mutations
+                            hit = True
                         if args.errors:
                             errors += levenshtein_distance(d,barcode,max_errors) * readnum
                         if not args.union:
@@ -310,7 +313,7 @@ if __name__ == '__main__':
                 else:
                     continue
                 break
-            else:
+            if not hit:
                 if args.reference:
                     print('Not found in the reference:', barcode, sep='\t', file=warningout)
                 else:

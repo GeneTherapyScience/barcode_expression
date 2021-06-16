@@ -297,14 +297,15 @@ if __name__ == '__main__':
                 for d in loop:
                     if d in merged_barcodes:
                         if barcode != d:
-                            print('Merge', barcode, 'as', d, sep='\t', file=warningout)
-                            uf.merge(d, barcode)
-                            if (not args.reference) and args.union:
-                                merged_barcodes.add(barcode)
+                            if not uf.connected(d, barcode):
+                                print('Merge', barcode, 'as', d, sep='\t', file=warningout)
+                                uf.merge(d, barcode)
                         if not hit:
                             td = uf.root(d) if args.union else d
                             merged_readnum[td] += readnum
                             merged_mutations[td] += mutations
+                            if (not args.reference) and args.union:
+                                merged_barcodes.add(barcode)
                             hit = True
                         if args.errors:
                             errors += levenshtein_distance(d,barcode,max_errors) * readnum

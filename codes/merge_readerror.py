@@ -296,10 +296,9 @@ if __name__ == '__main__':
                     loop = [c]
                 for d in loop:
                     if d in merged_barcodes:
-                        if barcode != d:
-                            if not uf.connected(d, barcode):
-                                print('Merge', barcode, 'as', d, sep='\t', file=warningout)
-                                uf.merge(d, barcode)
+                        if barcode != d and (not uf.connected(d, barcode)):
+                            print('Merge', barcode, 'as', d, sep='\t', file=warningout)
+                            uf.merge(d, barcode)
                         if not hit:
                             td = uf.root(d) if args.union else d
                             merged_readnum[td] += readnum

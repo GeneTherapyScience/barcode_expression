@@ -249,12 +249,15 @@ if __name__ == '__main__':
                         help='skip N-including barcodes.')
     parser.add_argument('--errors', action='store_true',
                         help='output number of errors.')
+    parser.add_argument('--max_errors', type=int, default=max_errors,
+                        help='set max_errors. (default:{})'.format(max_errors))
     args = parser.parse_args()
     if args.warningout:
         warningout = open(args.warningout, 'w')
     else:
         warningout = sys.stderr
     errors = 0
+    max_errors = args.max_errors
 
     header, data = inputdata(has_header=(not args.noheader))
     if args.skipN:

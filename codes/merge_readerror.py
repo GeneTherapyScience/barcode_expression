@@ -104,7 +104,7 @@ def N_candidates(barcode):
 
 def inputs(f=sys.stdin):
     while True:
-        line = f.readline()
+        line = f.readline().rstrip('\n')
         if not line: # EOF
             break
         else:

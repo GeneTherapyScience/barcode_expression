@@ -110,7 +110,7 @@ def inputs(f=sys.stdin):
         else:
             yield line
 
-def readref(referencefile):
+def readref(referencefile, column=0):
     ret = set()
     if referencefile:
         with open(referencefile) as f:
@@ -120,7 +120,7 @@ def readref(referencefile):
                 if line[0] == '#' or len(line)==0:
                     continue
                 else:
-                    barcode = line.split()[0]
+                    barcode = line.split()[column]
                     ret.add(barcode)
     return ret
 

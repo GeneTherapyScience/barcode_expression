@@ -229,6 +229,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--reference', default=None,
                         help='give reference barcodes.')
+    parser.add_argument('--refcolumn', type=int, default=0,
+                        help='barcode column in reference (default=0).')
     parser.add_argument('--refgroup', default=None,
                         help='give reference groups.')
     parser.add_argument('-w', '--warningout', default=None,
@@ -265,7 +267,7 @@ if __name__ == '__main__':
     N = len(data)
 
     start_i, halfway_barcodes, merged_readnum, merged_mutations = load_halfway(args.loadfile)
-    merged_barcodes = readref(args.reference) | halfway_barcodes
+    merged_barcodes = readref(args.reference, args.refcolumn) | halfway_barcodes
     uf = UnionFind()
     if args.refgroup:
         with open(args.refgroup) as f:

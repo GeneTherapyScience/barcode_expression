@@ -110,11 +110,12 @@ def inputs(f=sys.stdin):
         else:
             yield line
 
-def readref(referencefile, column=0):
+def readref(referencefile, has_header=True, column=0):
     ret = set()
     if referencefile:
         with open(referencefile) as f:
-            f.readline() # drop header
+            if has_header:
+                f.readline() # drop header
             for line in inputs(f):
                 line = line.strip()
                 if line[0] == '#' or len(line)==0:
@@ -247,6 +248,8 @@ if __name__ == '__main__':
                         help='file to save halfway results.')
     parser.add_argument('--noheader', action='store_true',
                         help='the input does not include header.')
+    parser.add_argument('--refnoheader', action='store_true',
+                        help='the reference does not include header.')
     parser.add_argument('--skipN', action='store_true',
                         help='skip N-including barcodes.')
     parser.add_argument('--errors', action='store_true',
@@ -267,7 +270,7 @@ if __name__ == '__main__':
     N = len(data)
 
     start_i, halfway_barcodes, merged_readnum, merged_mutations = load_halfway(args.loadfile)
-    merged_barcodes = readref(args.reference, args.refcolumn) | halfway_barcodes
+    merged_barcodes = readref(args.reference, column=args.refcolumn, has_header=(not args.refnoheader)) | halfway_barcodes
     uf = UnionFind()
     if args.refgroup:
         with open(args.refgroup) as f:

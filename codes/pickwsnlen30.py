@@ -22,7 +22,8 @@ if __name__ == '__main__':
     args, options = read_args(sys.argv)
     option_defaults = [
         ('wsncol', 1, int),
-        ('outdir', './', str)
+        ('outdir', './', str),
+        ('noheader', False, bool),
     ]
     for op, def_val, dtype in option_defaults:
         globals()[op] = dtype(options[op]) if op in options else def_val
@@ -42,8 +43,9 @@ if __name__ == '__main__':
             infile = open(infile_name)
             outfile = open(outfile_name, 'w')
 
-        # header = infile.readline().rstrip('\n')
-        # print(header, file=outfile)
+        if not noheader:
+            header = infile.readline().rstrip('\n')
+            print(header, file=outfile)
         for line in inputs(infile):
             wsn = line.split()[wsncol]
             if length_min <= len(wsn) <= length_max:

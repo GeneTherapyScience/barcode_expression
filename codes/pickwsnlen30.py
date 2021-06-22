@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
+from judge_stg import read_args
 
 usage = """\
 Usage : $ python pickwsnlen.py [--outdir=<outdir>] [<file1> <file2> ...]\
@@ -18,13 +19,14 @@ def inputs(f=sys.stdin):
             yield line
 
 if __name__ == '__main__':
-    infile_namelist = sys.argv[1:]
-    diroption = "--outdir="
-    if infile_namelist and infile_namelist[0][:len(diroption)] == diroption:
-        outdir = infile_namelist[0][len(diroption):]
-        infile_namelist = infile_namelist[1:]
-    else:
-        outdir = "./"
+    args, options = read_args(sys.argv)
+    option_defaults = [
+        ('wsncol', 1, int),
+        ('outdir', './', str)
+    ]
+    for op, def_val, dtype in option_defaults:
+        globals()[op] = dtype(options[op]) if op in options else def_val
+    infile_namelist = args[1:]
     if not infile_namelist:
         infile_namelist.append(None)
 
@@ -43,7 +45,7 @@ if __name__ == '__main__':
         # header = infile.readline().rstrip('\n')
         # print(header, file=outfile)
         for line in inputs(infile):
-            n, wsn = line.split()[:2]
+            wsn = line.split()[wsncol]
             if length_min <= len(wsn) <= length_max:
                 print(line.rstrip('\n'), file=outfile)
         infile.close()

@@ -18,7 +18,7 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--template', default=None,
                         help='give template to compare with.')
     parser.add_argument('-d', '--detail', default=None,
-                        help='give template to compare with.')
+                        help='give file to write detail.')
     parser.add_argument('--noheader', action='store_true',
                         help='the input does not include header.')
     args = parser.parse_args()

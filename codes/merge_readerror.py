@@ -9,6 +9,7 @@ from collections import defaultdict
 from tqdm import tqdm
 import time
 import shutil
+import itertools
 
 max_errors = 2
 expandN_bound = 2
@@ -53,6 +54,36 @@ def levenshtein_neighbors(barcode, distance, inserts=ATGC, min_distance=0):
                         done.add(c)
                         yield c
 
+def combinations(N,k):
+    if 0 <= k <= N:
+        c = [0]*k
+        pool = [(-1,-1)]
+        while pool:
+            i, n = pool.pop()
+            if i >= 0:
+                c[i] = n
+            if i >= k-1:
+                yield tuple(c)
+            else:
+                for m in range(i+N-k+1,n,-1):
+                    pool.append((i+1, m))
+
+def hamming_neighbors(barcode, distance, inserts=ATGC, min_distance=0):
+    N = len(barcode)
+    for k in range(min_distance, distance+1):
+        for c in combinations(N,k):
+            if {barcode[c[i]] for i in range(k)} - set(inserts):
+                continue
+            arr = list(barcode)
+            for r in itertools.product(ATGC, repeat=k):
+                for i in range(k):
+                    if barcode[c[i]] == r[i]:
+                        break
+                    else:
+                        arr[c[i]] = r[i]
+                else:
+                    yield ''.join(arr)
+
 DNA_match_pairs = set()
 for b in 'ATGC':
     DNA_match_pairs.add(b+b)
@@ -84,6 +115,19 @@ def levenshtein_distance(barcode0, barcode1, bound=None):
                 prev[n] + 1,
                 )
     return cur[N-1]
+
+def hamming_distance(barcode0, barcode1, bound=None):
+    M, N = len(barcode0), len(barcode1)
+    if bound is None:
+        bound = max(M,N)
+    if M != N:
+        return bound
+    d = 0
+    for i in range(M):
+        d += int(barcode0[i]+barcode1[i] not in DNA_match_pairs)
+        if d > bound:
+            break
+    return d
 
 def N_candidates(barcode):
     k = barcode.count('N')
@@ -226,6 +270,19 @@ class UnionFind:
         else:
             return self.parent.keys()
 
+test_flag = False
+if test_flag:
+    barcode0 = "TTT"
+    barcode1 = "TAT"
+    print("distance:", hamming_distance(barcode0, barcode1))
+    n = 0
+    for neighbor in hamming_neighbors(barcode0,2,min_distance=2):
+        n += 1
+        print(neighbor)
+    print(n)
+    exit()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--reference', default=None,
@@ -252,6 +309,8 @@ if __name__ == '__main__':
                         help='the reference does not include header.')
     parser.add_argument('--skipN', action='store_true',
                         help='skip N-including barcodes.')
+    parser.add_argument('--hamming', action='store_true',
+                        help='Use Hamming distance, instead of Levenshtein.')
     parser.add_argument('--errors', action='store_true',
                         help='output number of errors.')
     parser.add_argument('--max_errors', type=int, default=max_errors,
@@ -263,6 +322,12 @@ if __name__ == '__main__':
         warningout = sys.stderr
     errors = 0
     max_errors = args.max_errors
+    if args.hamming:
+        get_distance = hamming_distance
+        get_neighbors = hamming_neighbors
+    else:
+        get_distance = levenshtein_distance
+        get_neighbors = levenshiten_distance
 
     header, data = inputdata(has_header=(not args.noheader))
     if args.skipN:
@@ -297,7 +362,7 @@ if __name__ == '__main__':
         NN = barcode.count('N')
         if NN <= expandN_bound:
             hit = False
-            for c in levenshtein_neighbors(barcode, max_errors):
+            for c in get_neighbors(barcode, max_errors):
                 if NN:
                     loop = N_candidates(c)
                 else:
@@ -315,7 +380,7 @@ if __name__ == '__main__':
                                 merged_barcodes.add(barcode)
                             hit = True
                         if args.errors:
-                            errors += levenshtein_distance(d,barcode,max_errors) * readnum
+                            errors += get_distance(d,barcode,max_errors) * readnum
                         if not args.union:
                             break
                 else:
@@ -332,7 +397,7 @@ if __name__ == '__main__':
                     merged_mutations[barcode] += mutations
         else:
             for target in merged_barcodes:
-                distance = levenshtein_distance(barcode, target, max_errors)
+                distance = get_distance(barcode, target, max_errors)
                 if distance <= max_errors:
                     merged_readnum[target] += readnum
                     merged_mutations[target] += mutations

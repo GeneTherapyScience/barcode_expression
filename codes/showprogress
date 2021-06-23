@@ -1,0 +1,5 @@
+#!/bin/sh
+for filename in "$@"
+do
+    nkf -Lu ${filename} | tail -1 && echo
+done

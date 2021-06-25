@@ -253,6 +253,13 @@ class UnionFind:
     def size(self, n):
         return -self.parent[self.root(n)]
     
+    def setsize(self, n, s):
+        rn = self.root(n)
+        if rn == n:
+            self.parent[n] = -s
+        else:
+            self.parent[self.root(n)] -= (s-1)
+
     def connected(self, m, n):
         return self.root(m) == self.root(n)
 

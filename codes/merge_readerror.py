@@ -169,7 +169,7 @@ def readref(referencefile, has_header=True, column=0):
                     ret.add(barcode)
     return ret
 
-def inputdata(f=sys.stdin, has_header=True):
+def inputdata(f=sys.stdin, has_header=True, reads_sort=True):
     if has_header:
         header = f.readline().rstrip()
     else:
@@ -193,7 +193,8 @@ def inputdata(f=sys.stdin, has_header=True):
         readnum = 0 if readnum=='NA' else int(readnum)
         mutations = 0 if mutations=='NA' else int(mutations)
         data.append((barcode, readnum, mutations))
-    data.sort(key=lambda x: (x[0].count('N'), -x[1], x[0]))
+    if reads_sort:
+        data.sort(key=lambda x: (x[0].count('N'), -x[1], x[0]))
     return header, data
 
 def load_halfway(loadfile):

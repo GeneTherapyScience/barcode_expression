@@ -1,5 +1,5 @@
 from alignment import seq_alignment
-from merge_readerror import inputs
+from barcodelib import inputs
 from tqdm import trange
 
 default_reference = "GGTGGCTTTACCAACAGTAC"

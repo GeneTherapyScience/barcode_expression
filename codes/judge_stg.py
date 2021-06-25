@@ -6,7 +6,7 @@ import os
 import sys
 from tqdm import tqdm, trange
 import re
-from merge_readerror import inputs
+from barcodelib import inputs
 from alignment import seq_distance
 
 def read_args(argv):

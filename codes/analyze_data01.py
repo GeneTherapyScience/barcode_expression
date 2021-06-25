@@ -1,6 +1,6 @@
 import os
 from collections import defaultdict
-from merge_readerror import inputs
+from barcodelib import inputs
 import numpy as np
 
 def get_filelist(sample, datadir='../wsnstg_white40/'):

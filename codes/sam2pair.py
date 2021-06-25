@@ -1,5 +1,5 @@
 #!/user/bin/env python3
-from merge_readerror import inputs
+from barcodelib import inputs
 # from alignment import *
 # from random import randrange
 from collections import Counter, defaultdict

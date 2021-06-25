@@ -4,7 +4,7 @@ import os
 from collections import defaultdict
 import re
 from alignment import seq_alignment
-from merge_readerror import inputs
+from barcodelib import inputs
 
 usage = """\
 Usage : $ python wsnstg2wsnmixd.py [--outdir=<outdir>] [<file1> <file2> ...]\

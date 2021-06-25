@@ -116,7 +116,7 @@ if __name__ == '__main__':
     print(distance)
 
     import time
-    from merge_readerror import levenshtein_distance
+    from barcodelib import levenshtein_distance
 
     print(seq_distance(template, target))
     # print(seq_distance('AGCTAT','AGC'))    

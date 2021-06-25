@@ -4,7 +4,7 @@
 ###
 
 import sys
-from merge_readerror import inputs
+from barcodelib import inputs
 from alignment import seq_distance
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 #!/user/bin/env python
-from merge_readerror import *
+from barcodelib import *
 from wsnstg2mutinfo import wsn_thres
 from bisect import bisect_left
 import math

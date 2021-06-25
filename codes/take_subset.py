@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from merge_readerror import *
+from barcodelib import *
 import numpy as np
 import argparse
 from bisect import bisect_left

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from merge_readerror import *
+from barcodelib import *
 from tqdm import tqdm, trange
 from collections import defaultdict
 import argparse

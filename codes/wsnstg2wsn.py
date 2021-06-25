@@ -50,7 +50,7 @@ if __name__ == '__main__':
         else:
             outfile = sys.stdout
 
-        print('WSN', 'Tolta', 'Mut', 'Mut_total', sep='\t', file=outfile)
+        print('WSN', 'Total', 'Mut', 'Mut_total', sep='\t', file=outfile)
         for wsn, data in sorted(wsn_data.items(), key=lambda x: (-x[1][0], -x[1][1], x[0])):
             r, mut = data
             if r > 0:

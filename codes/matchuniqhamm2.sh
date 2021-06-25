@@ -10,11 +10,14 @@ mkdir -p ${progdir}
 for filename in "$@"
 do
     basename=`basename ${filename} ${suffix}`
-    output=${basename}${newsuffix}
     progress=${progdir}/${basename}${progsuffix}
-    cat ${filename} \
-    | awk 'length($2)==30 {print $2 "\t" $1 "\t" 0}' \
-    | ${python} ${merge_script} -w /dev/null --noheader --skipN --hamming --max_error 2 \
-      2> ${progress} \
-    | awk '{print $2 "\t" $1}' > ${output}
+    output=${basename}${newsuffix}
+    if [ ! -e ${output} ]; then
+        cat ${filename} \
+        | awk 'length($2)==30 {print $2 "\t" $1 "\t" 0}' \
+        | ${python} ${merge_script} -w /dev/null --noheader --skipN --hamming --max_error 2 \
+        2> ${progress} \
+        | awk '{print $2 "\t" $1}' \
+        | sort -n -r > ${output}
+    fi
 done

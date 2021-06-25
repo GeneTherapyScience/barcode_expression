@@ -1,3 +1,9 @@
+import os
+import sys
+from collections import defaultdict
+import shutil
+import itertools
+
 ATGC = sorted('ATGC')
 CGTA = ATGC[::-1]
 

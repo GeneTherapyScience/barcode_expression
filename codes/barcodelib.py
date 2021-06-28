@@ -276,3 +276,10 @@ def get_distance_dictionary(dict_filename):
             distance_dict[stg] = d
     return distance_dict
 
+def get_distance_list(dict_filename):
+    distance_list = []
+    with open(dict_filename) as f:
+        for line in inputs(f):
+            stg, mixd, d = line.split()
+            distance_list.append(float(d))
+    return distance_list

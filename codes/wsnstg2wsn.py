@@ -30,6 +30,11 @@ if __name__ == '__main__':
             infile = sys.stdin
         else:
             infile = open(infile_name)
+            outfile_name = os.path.join(outdir,
+                re.sub('\.'+in_suffix+'$', '', os.path.basename(infile_name)) + '.' + out_suffix
+                )
+            if os.path.exists(outfile_name):
+                continue
 
         wsn_data = defaultdict(lambda: [0,0]) # read, var
         header = infile.readline().rstrip('\n')
@@ -43,9 +48,6 @@ if __name__ == '__main__':
 
         if infile != sys.stdin:
             infile.close()
-            outfile_name = os.path.join(outdir,
-                re.sub('\.'+in_suffix+'$', '', os.path.basename(infile_name)) + '.' + out_suffix
-                )
             outfile = open(outfile_name, 'w')
         else:
             outfile = sys.stdout

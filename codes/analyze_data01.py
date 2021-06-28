@@ -29,7 +29,8 @@ def get_filelist(sample, datadir='../wsnstg_white40/'):
     return filelist
 
 from itertools import product
-from wsnstg2mutinfo import get_distance_dictionary, wsn_thres
+from wsnstg2mutinfo import wsn_thres
+from barcodelib import get_distance_dictionary
 
 def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whitelist.sorted.stgmixd', ratio=10**(-5)):
     files = get_filelist(sample, datadir)

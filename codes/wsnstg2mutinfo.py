@@ -5,7 +5,7 @@ import re
 from collections import defaultdict
 from judge_stg import read_args
 from math import ceil
-from barcodelib import inputs
+from barcodelib import inputs, get_distance_dictionary
 
 usage = """\
 Usage : $ python wsnstg2avarage.py --dictionary=<dictionary> [--outdir=<outdir>] [<file1> <file2> ...]\
@@ -30,15 +30,6 @@ def wsn_thres(A, ratio=threshold_share):
             return a
     else:
         return a
-
-def get_distance_dictionary(dict_filename):
-    distance_dict = dict()
-    with open(dict_filename) as f:
-        for line in inputs(f):
-            stg, mixd, d = line.split()
-            d = float(d)
-            distance_dict[stg] = d
-    return distance_dict
 
 if __name__ == '__main__':
     args, options = read_args(sys.argv)

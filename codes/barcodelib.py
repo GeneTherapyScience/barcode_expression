@@ -266,3 +266,13 @@ class UnionFind:
             return range(len(self.parent))
         else:
             return self.parent.keys()
+
+def get_distance_dictionary(dict_filename):
+    distance_dict = dict()
+    with open(dict_filename) as f:
+        for line in inputs(f):
+            stg, mixd, d = line.split()
+            d = float(d)
+            distance_dict[stg] = d
+    return distance_dict
+

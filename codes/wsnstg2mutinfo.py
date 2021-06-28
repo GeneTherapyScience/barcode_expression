@@ -5,6 +5,7 @@ import re
 from collections import defaultdict
 from judge_stg import read_args
 from math import ceil
+from barcodelib import inputs
 
 usage = """\
 Usage : $ python wsnstg2avarage.py --dictionary=<dictionary> [--outdir=<outdir>] [<file1> <file2> ...]\
@@ -38,14 +39,6 @@ def get_distance_dictionary(dict_filename):
             d = float(d)
             distance_dict[stg] = d
     return distance_dict
-
-def inputs(f=sys.stdin):
-    while True:
-        line = f.readline()
-        if not line: # EOF
-            break
-        else:
-            yield line
 
 if __name__ == '__main__':
     args, options = read_args(sys.argv)

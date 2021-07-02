@@ -73,7 +73,7 @@ if __name__ == '__main__':
         get_neighbors = hamming_neighbors
     else:
         get_distance = levenshtein_distance
-        get_neighbors = levenshiten_distance
+        get_neighbors = levenshtein_neighbors
 
     header, data = inputdata(has_header=(not args.noheader))
     if args.skipN:

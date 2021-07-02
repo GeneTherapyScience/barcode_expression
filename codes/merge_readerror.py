@@ -61,6 +61,8 @@ if __name__ == '__main__':
                         help='output number of errors.')
     parser.add_argument('--max_errors', type=int, default=max_errors,
                         help='set max_errors. (default:{})'.format(max_errors))
+    parser.add_argument('--drop', action='store_true',
+                        help='Drop rather than merge.')
     args = parser.parse_args()
     if args.warningout:
         warningout = open(args.warningout, 'w')
@@ -120,8 +122,9 @@ if __name__ == '__main__':
                             uf.merge(d, barcode)
                         if not hit:
                             td = uf.root(d) if args.union else d
-                            merged_readnum[td] += readnum
-                            merged_mutations[td] += mutations
+                            if not args.drop:
+                                merged_readnum[td] += readnum
+                                merged_mutations[td] += mutations
                             if (not args.reference) and args.union:
                                 merged_barcodes.add(barcode)
                             hit = True
@@ -145,8 +148,9 @@ if __name__ == '__main__':
             for target in merged_barcodes:
                 distance = get_distance(barcode, target, max_errors)
                 if distance <= max_errors:
-                    merged_readnum[target] += readnum
-                    merged_mutations[target] += mutations
+                    if not args.drop:
+                        merged_readnum[target] += readnum
+                        merged_mutations[target] += mutations
                     if args.errors:
                         errors += distance * readnum
                     break
@@ -165,10 +169,13 @@ if __name__ == '__main__':
         for barcode in merged_barcodes:
             root = uf.root(barcode)
             if root != barcode:
-                print('Merge', barcode, 'as', root, sep='\t', file=warningout)
-                merged_readnum[root] += merged_readnum[barcode]
-                merged_mutations[root] += merged_mutations[barcode]
-                del merged_readnum[barcode], merged_mutations[barcode]
+                if args.drop:
+                    print('Drop', barcode)
+                else:
+                    print('Merge', barcode, 'as', root, sep='\t', file=warningout)
+                    merged_readnum[root] += merged_readnum[barcode]
+                    merged_mutations[root] += merged_mutations[barcode]
+                    del merged_readnum[barcode], merged_mutations[barcode]
     for barcode in sorted(merged_readnum.keys()):
         readnum, mutations = merged_readnum[barcode], merged_mutations[barcode]
         if readnum == 0:

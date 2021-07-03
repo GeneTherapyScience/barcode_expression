@@ -104,7 +104,7 @@ if __name__ == '__main__':
     for i in barcode_loop:
         if time.time() > save_t:
             save_t += save_interval
-            save_halfway(args.milestonefile, merged_barcodes, merged_readnum, merged_mutations)
+            save_halfway(args.milestonefile, merged_barcodes, merged_readnum, merged_mutations, i)
 
         barcode, readnum, mutations = data[i]
         NN = barcode.count('N')

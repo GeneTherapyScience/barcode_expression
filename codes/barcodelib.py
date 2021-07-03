@@ -201,12 +201,12 @@ def load_halfway(loadfile):
                 halfway_mutations[barcode] = int(mutations)
     return start_i, halfway_barcodes, halfway_readnum, halfway_mutations
 
-def save_halfway(savefile, merged_barcodes, merged_readnum, merged_mutations):
+def save_halfway(savefile, merged_barcodes, merged_readnum, merged_mutations, step):
     if not savefile:
         return False
     tmpfile = savefile+'.tmp'
     with open(tmpfile, 'w') as f:
-        print(i, file=f)
+        print(step, file=f)
         for barcode in sorted(merged_barcodes):
             readnum, mutations = merged_readnum[barcode], merged_mutations[barcode]
             print(barcode, readnum, mutations, sep='\t', file=f)

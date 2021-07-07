@@ -29,11 +29,11 @@ def get_filelist(sample, datadir='../wsnstg_white40/', common = '.merge.extracte
 
 from itertools import product
 from wsnstg2mutinfo import wsn_thres
-from barcodelib import get_distance_dictionary
+from barcodelib import get_mixd_dictionary, mixd_distance
 
 def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whitelist.sorted.stgmixd', ratio=10**(-5), common = '.merge.extracted.reformat.white40.wsnstg'):
     files = get_filelist(sample, datadir, common)
-    distance_dictionary = get_distance_dictionary(dictfile)
+    mixd_dictionary = get_mixd_dictionary(dictfile)
     result = defaultdict(lambda: [[],[],[]])
     for e, t, k in product(range(3), repeat=3):
         filename = files[e][t][k]
@@ -44,16 +44,23 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
             for line in inputs(f):
                 wsn, stg, r = line.split()
                 r = int(r)
-                d = distance_dictionary[stg]
+                mixd = mixd_dictionary[stg]
+                d, di, dx, dd = mixd_distance(mixd)
                 wsn_data[wsn]['reads'] += r
                 wsn_data[wsn]['muts'] += r * int(d > 0)
+                wsn_data[wsn]['ins'] += di*r
+                wsn_data[wsn]['del'] += dd*r
+                wsn_data[wsn]['mis'] += dx*r
                 wsn_dist[wsn][d] += r
         th = wsn_thres([wsn_data[wsn]['reads'] for wsn in wsn_data.keys()], ratio)
         for wsn in wsn_dist.keys():
-            wsn_data[wsn]['total_mut'] = sum(d*r for d,r in wsn_dist[wsn].items())
+            wsn_data[wsn]['dist'] = wsn_dist[wsn]
+            wsn_data[wsn]['total_mut'] = sum(d*r for d,r in wsn_data[wsn]['dist'].items())
             wsn_data[wsn]['mean_all'] = wsn_data[wsn]['total_mut']/wsn_data[wsn]['reads']
             wsn_data[wsn]['mean_mut'] = wsn_data[wsn]['total_mut']/wsn_data[wsn]['muts'] if wsn_data[wsn]['muts']>0 else None
-            wsn_data[wsn]['dist'] = wsn_dist[wsn]
+            wsn_data[wsn]['ins_mean'] = wsn_data[wsn]['ins']/wsn_data[wsn]['reads']
+            wsn_data[wsn]['del_mean'] = wsn_data[wsn]['del']/wsn_data[wsn]['reads']
+            wsn_data[wsn]['mis_mean'] = wsn_data[wsn]['mis']/wsn_data[wsn]['reads']
             wsn_data[wsn]['alive'] = True if wsn_data[wsn]['reads'] >= th else False
 
         result[e][t].append(wsn_data)

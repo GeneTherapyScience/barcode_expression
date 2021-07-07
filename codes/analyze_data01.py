@@ -3,10 +3,9 @@ from collections import defaultdict
 from barcodelib import inputs
 import numpy as np
 
-def get_filelist(sample, datadir='../wsnstg_white40/'):
+def get_filelist(sample, datadir='../wsnstg_white40/', common = '.merge.extracted.reformat.white40.wsnstg'):
     days = ['Day0', 'D7', 'D14']
     env = ['NT', 'DTX', 'Sp']
-    common = '.merge.extracted.reformat.white40.wsnstg'
     filelist = []
     for e in range(3):
         filelist.append([])
@@ -32,8 +31,8 @@ from itertools import product
 from wsnstg2mutinfo import wsn_thres
 from barcodelib import get_distance_dictionary
 
-def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whitelist.sorted.stgmixd', ratio=10**(-5)):
-    files = get_filelist(sample, datadir)
+def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whitelist.sorted.stgmixd', ratio=10**(-5), common = '.merge.extracted.reformat.white40.wsnstg'):
+    files = get_filelist(sample, datadir, common)
     distance_dictionary = get_distance_dictionary(dictfile)
     result = defaultdict(lambda: [[],[],[]])
     for e, t, k in product(range(3), repeat=3):

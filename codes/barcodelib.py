@@ -276,6 +276,15 @@ def get_distance_dictionary(dict_filename):
             distance_dict[stg] = d
     return distance_dict
 
+def get_mixd_dictionary(dict_filename):
+    mixd_dict = dict()
+    with open(dict_filename) as f:
+        for line in inputs(f):
+            stg, mixd, d = line.split()
+            # d = float(d)
+            mixd_dict[stg] = mixd
+    return mixd_dict
+
 def get_distance_list(dict_filename):
     distance_list = []
     with open(dict_filename) as f:

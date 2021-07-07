@@ -285,6 +285,29 @@ def get_mixd_dictionary(dict_filename):
             mixd_dict[stg] = mixd
     return mixd_dict
 
+mixd_distances = dict()
+def mixd_distance(mixd):
+    if mixd not in mixd_distances:
+        di = dx = dd = 0
+        prev = ''
+        for s in mixd:
+            if s == 'X':
+                dx += 1
+            elif s == 'I':
+                if prev == 'I':
+                    di += 0.5
+                else:
+                    di += 2.5
+            elif s == 'D':
+                if prev =='D':
+                    dd += 0.5
+                else:
+                    di += 2.5
+            prev = s
+        d = di + dx + dd
+        mixd_distances[mixd] = (d,di,dx,dd)
+    return mixd_distances[mixd]
+
 def get_distance_list(dict_filename):
     distance_list = []
     with open(dict_filename) as f:

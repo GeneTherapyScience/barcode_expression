@@ -63,6 +63,7 @@ if __name__ == '__main__':
                         help='set max_errors. (default:{})'.format(max_errors))
     parser.add_argument('--drop', action='store_true',
                         help='Drop rather than merge.')
+    parser.add_argument('--expandN_bound', type=int, default=expandN_bound)
     args = parser.parse_args()
     if args.warningout:
         warningout = open(args.warningout, 'w')
@@ -108,7 +109,7 @@ if __name__ == '__main__':
 
         barcode, readnum, mutations = data[i]
         NN = barcode.count('N')
-        if NN <= expandN_bound:
+        if NN <= args.expandN_bound:
             hit = False
             for c in get_neighbors(barcode, max_errors):
                 if NN:
@@ -158,7 +159,8 @@ if __name__ == '__main__':
                 if args.reference:
                     print('The sequence {} was not found in the reference.'.format(barcode), file=warningout)
                 else:
-                    print('N-including barcode', barcode, 'has no parent array.', file=warningout)
+                    if NN > 0:
+                        print('N-including barcode', barcode, 'has no parent array.', file=warningout)
                     merged_barcodes.add(barcode)
                     merged_readnum[barcode] += readnum
                     merged_mutations[barcode] += mutations

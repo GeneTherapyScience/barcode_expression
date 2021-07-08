@@ -4,6 +4,7 @@ from alignment import *
 from random import randrange
 from collections import Counter, defaultdict
 from tqdm import tqdm, trange
+import argparse
 
 Nsampling = 10
 Npair=0

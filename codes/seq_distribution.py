@@ -21,9 +21,15 @@ if __name__ == '__main__':
                         help='give file to write detail.')
     parser.add_argument('--noheader', action='store_true',
                         help='the input does not include header.')
+    parser.add_argument('--hamming', action='store_true',
+                        help='use Hamming distance, rather than Levenshtein.')
     args = parser.parse_args()
     Nsampling = args.nsampling
     Npair = args.pairs
+    if args.hamming:
+        distance = hamming_distance
+    else:
+        distance = levenshtein_distance
 
     header, data = inputdata(has_header=(not args.noheader))
     N = len(data)
@@ -54,7 +60,7 @@ if __name__ == '__main__':
                 m, n = randrange(N), randrange(N)
                 if m != n:
                     break
-            count[levenshtein_distance(data[m][0], data[n][0])] += 1
+            count[distance(data[m][0], data[n][0])] += 1
         print(sorted(count.items()), sep='\t')
     else:
         results = []
@@ -65,7 +71,7 @@ if __name__ == '__main__':
             count = defaultdict(int)
             for n in range(N):
                 if n != m:
-                    count[levenshtein_distance(data[n][0], barcode)] += 1
+                    count[distance(data[n][0], barcode)] += 1
             results.append((barcode, count))
 
         for barcode, count in results:

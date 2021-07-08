@@ -56,7 +56,7 @@ if __name__ == '__main__':
                 print('sequence', 'alignment', 'score', 'reads', sep='\t', file=f)
                 for k, v in sorted(detail.items(), key=lambda x: (x[1][1],-x[1][2],x[0])):
                     print(k, *v, sep='\t', file=f)
-    elif args.pair:
+    elif args.all:
         count = defaultdict(int)
         M = N*(N-1)//2
         i = j = 0

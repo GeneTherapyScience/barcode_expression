@@ -21,6 +21,8 @@ if __name__ == '__main__':
                         help='give file to write detail.')
     parser.add_argument('--noheader', action='store_true',
                         help='the input does not include header.')
+    parser.add_argument('--all', action='store_true',
+                        help='Take all possible pairs.')
     parser.add_argument('--hamming', action='store_true',
                         help='use Hamming distance, rather than Levenshtein.')
     args = parser.parse_args()
@@ -53,6 +55,17 @@ if __name__ == '__main__':
                 print('sequence', 'alignment', 'score', 'reads', sep='\t', file=f)
                 for k, v in sorted(detail.items(), key=lambda x: (x[1][1],-x[1][2],x[0])):
                     print(k, *v, sep='\t', file=f)
+    elif args.pair:
+        count = defaultdict(int)
+        M = N*(N-1)//2
+        i = j = 0
+        for _ in trange(M):
+            j += 1
+            if j >= N:
+                i += 1
+                j = i + 1
+            count[distance(data[i][0], data[j][0])] += 1
+        print(sorted(count.items()), sep='\t')
     elif Npair > 0:
         count = defaultdict(int)
         for _ in trange(Npair):

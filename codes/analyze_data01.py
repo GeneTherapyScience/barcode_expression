@@ -66,7 +66,7 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
         result[e][t].append(wsn_data)
     return result
 
-def get_subdata_readmut(data, e, t, k, *keys, only_alive=True):
+def get_subdata_readmut(data, e, t, k, *keys, only_alive=True, wsns=None):
     subdata = data[e][t]
     if isinstance(k,int):
         K = [k]
@@ -74,7 +74,7 @@ def get_subdata_readmut(data, e, t, k, *keys, only_alive=True):
         K = k
     subdata_readmut = [
         [subdata[k][wsn][key] for key in keys]
-        for k in K for wsn in subdata[k].keys()
+        for k in K for wsn in (wsns or subdata[k].keys())
         if (((not only_alive) or subdata[k][wsn]['alive'])
             and (None not in [subdata[k][wsn][key] for key in keys]))
     ]

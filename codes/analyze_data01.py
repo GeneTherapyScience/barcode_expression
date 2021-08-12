@@ -7,6 +7,9 @@ def get_filelist(sample, datadir='../wsnstg_white40/', common = '.merge.extracte
     days = ['Day0', 'D7', 'D14']
     env = ['NT', 'DTX', 'Sp']
     filelist = []
+    if not sample[1].isdecimal():
+        return [[[os.path.join(datadir, sample + common)]]]
+
     for e in range(3):
         filelist.append([])
         for t in range(3):
@@ -35,7 +38,8 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
     files = get_filelist(sample, datadir, common)
     mixd_dictionary = get_mixd_dictionary(dictfile)
     result = defaultdict(lambda: [[],[],[]])
-    for e, t, k in product(range(3), repeat=3):
+    E, T, K = len(files), len(files[0]), len(files[0][0])
+    for e, t, k in product(range(E),range(T),range(K)):
         filename = files[e][t][k]
         wsn_data = defaultdict(lambda: defaultdict(int))
         wsn_dist = defaultdict(lambda: defaultdict(int))
@@ -70,7 +74,8 @@ def get_stg_histogram(sample, datadir='../wsnstg_white40/', dictfile='../stginfo
     files = get_filelist(sample, datadir, common)
     mixd_dictionary = get_mixd_dictionary(dictfile)
     result = defaultdict(lambda: [[],[],[]])
-    for e, t, k in product(range(3), repeat=3):
+    E, T, K = len(files), len(files[0]), len(files[0][0])
+    for e, t, k in product(range(E),range(T),range(K)):
         filename = files[e][t][k]
         stg_dist = defaultdict(lambda: defaultdict(int))
         with open(filename) as f:

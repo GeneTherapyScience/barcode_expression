@@ -32,7 +32,7 @@ def get_filelist(sample, datadir='../wsnstg_white40/', common = '.merge.extracte
 
 from itertools import product
 from wsnstg2mutinfo import wsn_thres
-from barcodelib import get_mixd_dictionary, mixd_distance
+from barcodelib import get_mixd_dictionary, mixd_distance, mixd_distances
 
 def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whitelist.sorted.stgmixd', ratio=10**(-5), common = '.merge.extracted.reformat.white40.wsnstg'):
     files = get_filelist(sample, datadir, common)

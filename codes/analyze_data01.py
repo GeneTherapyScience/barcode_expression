@@ -32,11 +32,14 @@ def get_filelist(sample, datadir='../wsnstg_white40/', common = '.merge.extracte
 
 from itertools import product
 from wsnstg2mutinfo import wsn_thres
-from barcodelib import get_mixd_dictionary, mixd_distance, mixd_distances
+import barcodelib
+import importlib
+importlib.reload(barcodelib)
+# from barcodelib import get_mixd_dictionary, mixd_distance, mixd_distances
 
 def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whitelist.sorted.stgmixd', ratio=10**(-5), common = '.merge.extracted.reformat.white40.wsnstg'):
     files = get_filelist(sample, datadir, common)
-    mixd_dictionary = get_mixd_dictionary(dictfile)
+    mixd_dictionary = barcodelib.get_mixd_dictionary(dictfile)
     result = defaultdict(lambda: [[],[],[]])
     E, T, K = len(files), len(files[0]), len(files[0][0])
     for e, t, k in product(range(E),range(T),range(K)):
@@ -49,7 +52,7 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
                 wsn, stg, r = line.split()
                 r = int(r)
                 mixd = mixd_dictionary[stg]
-                d, di, dx, dd = mixd_distance(mixd)
+                d, di, dx, dd = barcodelib.mixd_distance(mixd)
                 wsn_data[wsn]['reads'] += r
                 wsn_data[wsn]['muts'] += r * int(d > 0)
                 wsn_data[wsn]['ins'] += di*r
@@ -72,7 +75,7 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
 
 def get_stg_histogram(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whitelist.sorted.stgmixd', ratio=10**(-5), common = '.merge.extracted.reformat.white40.wsnstg'):
     files = get_filelist(sample, datadir, common)
-    mixd_dictionary = get_mixd_dictionary(dictfile)
+    mixd_dictionary = barcodelib.get_mixd_dictionary(dictfile)
     result = defaultdict(lambda: [[],[],[]])
     E, T, K = len(files), len(files[0]), len(files[0][0])
     for e, t, k in product(range(E),range(T),range(K)):
@@ -84,7 +87,7 @@ def get_stg_histogram(sample, datadir='../wsnstg_white40/', dictfile='../stginfo
                 wsn, stg, r = line.split()
                 r = int(r)
                 mixd = mixd_dictionary[stg]
-                d, di, dx, dd = mixd_distance(mixd)
+                d, di, dx, dd = barcodelib.mixd_distance(mixd)
                 stg_dist['total'][d] += r
                 stg_dist['ins'][di] += r
                 stg_dist['mis'][dx] += r

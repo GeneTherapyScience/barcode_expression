@@ -302,7 +302,7 @@ def mixd_distance(mixd):
                 if prev =='D':
                     dd += 0.5
                 else:
-                    di += 2.5
+                    dd += 2.5
             prev = s
         d = di + dx + dd
         mixd_distances[mixd] = (d,di,dx,dd)

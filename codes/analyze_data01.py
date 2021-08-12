@@ -66,6 +66,28 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
         result[e][t].append(wsn_data)
     return result
 
+def get_stg_histogram(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whitelist.sorted.stgmixd', ratio=10**(-5), common = '.merge.extracted.reformat.white40.wsnstg'):
+    files = get_filelist(sample, datadir, common)
+    mixd_dictionary = get_mixd_dictionary(dictfile)
+    result = defaultdict(lambda: [[],[],[]])
+    for e, t, k in product(range(3), repeat=3):
+        filename = files[e][t][k]
+        stg_dist = defaultdict(lambda: defaultdict(int))
+        with open(filename) as f:
+            f.readline()
+            for line in inputs(f):
+                wsn, stg, r = line.split()
+                r = int(r)
+                mixd = mixd_dictionary[stg]
+                d, di, dx, dd = mixd_distance(mixd)
+                stg_dist['total'][d] += r
+                stg_dist['ins'][di] += r
+                stg_dist['mis'][dx] += r
+                stg_dist['del'][dd] += r
+
+        result[e][t].append(stg_dist)
+    return result
+
 def get_subdata_readmut(data, e, t, k, *keys, only_alive=True, wsns=None):
     subdata = data[e][t]
     if isinstance(k,int):

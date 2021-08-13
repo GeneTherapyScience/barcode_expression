@@ -90,11 +90,13 @@ def get_stg_histogram(sample, datadir='../wsnstg_white40/', dictfile='../stginfo
     for e, t, k in product(range(E),range(T),range(K)):
         filename = files[e][t][k]
         stg_dist = defaultdict(lambda: defaultdict(int))
+        reads = 0
         with open(filename) as f:
             f.readline()
             for line in inputs(f):
                 wsn, stg, r = line.split()
                 r = int(r)
+                reads += r
                 mixd = mixd_dictionary[stg]
                 d, di, dx, dd = barcodelib.mixd_distance(mixd)
                 stg_dist['total'][d] += r
@@ -102,6 +104,8 @@ def get_stg_histogram(sample, datadir='../wsnstg_white40/', dictfile='../stginfo
                 stg_dist['mis'][dx] += r
                 stg_dist['del'][dd] += r
 
+        stg_dist['reads'] = reads
+        stg_dist['mut'] = stg_dist['total']
         result[e][t].append(stg_dist)
     return result
 

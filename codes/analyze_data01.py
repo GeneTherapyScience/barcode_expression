@@ -70,7 +70,7 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
             wsn_data[wsn]['mut'] = wsn_data[wsn]['total_mut']
             wsn_data[wsn]['mean_all'] = wsn_data[wsn]['total_mut']/wsn_data[wsn]['reads']
             wsn_data[wsn]['mean_mut'] = wsn_data[wsn]['total_mut']/wsn_data[wsn]['muts'] if wsn_data[wsn]['muts']>0 else None
-            wsn_data[wsn]['mut_mean'] = wsn_data[wsn]['mean_mut']
+            wsn_data[wsn]['mut_mean'] = wsn_data[wsn]['mean_all']
             wsn_data[wsn]['ins_mean'] = wsn_data[wsn]['ins']/wsn_data[wsn]['reads']
             wsn_data[wsn]['del_mean'] = wsn_data[wsn]['del']/wsn_data[wsn]['reads']
             wsn_data[wsn]['mis_mean'] = wsn_data[wsn]['mis']/wsn_data[wsn]['reads']

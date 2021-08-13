@@ -55,21 +55,30 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
                 d, di, dx, dd = barcodelib.mixd_distance(mixd)
                 wsn_data[wsn]['reads'] += r
                 wsn_data[wsn]['muts'] += r * int(d > 0)
+                wsn_data[wsn]['mut_reads'] = wsn_data[wsn]['muts']
                 wsn_data[wsn]['ins'] += di*r
+                wsn_data[wsn]['ins_reads'] += r * int(di > 0)
                 wsn_data[wsn]['del'] += dd*r
+                wsn_data[wsn]['del_reads'] += r * int(dd > 0)
                 wsn_data[wsn]['mis'] += dx*r
+                wsn_data[wsn]['mis_reads'] += r * int(dx > 0)
                 wsn_dist[wsn][d] += r
         th = wsn_thres([wsn_data[wsn]['reads'] for wsn in wsn_data.keys()], ratio)
         for wsn in wsn_dist.keys():
             wsn_data[wsn]['dist'] = wsn_dist[wsn]
             wsn_data[wsn]['total_mut'] = sum(d*r for d,r in wsn_data[wsn]['dist'].items())
+            wsn_data[wsn]['mut'] = wsn_data[wsn]['total_mut']
             wsn_data[wsn]['mean_all'] = wsn_data[wsn]['total_mut']/wsn_data[wsn]['reads']
             wsn_data[wsn]['mean_mut'] = wsn_data[wsn]['total_mut']/wsn_data[wsn]['muts'] if wsn_data[wsn]['muts']>0 else None
+            wsn_data[wsn]['mut_mean'] = wsn_data[wsn]['mean_mut']
             wsn_data[wsn]['ins_mean'] = wsn_data[wsn]['ins']/wsn_data[wsn]['reads']
             wsn_data[wsn]['del_mean'] = wsn_data[wsn]['del']/wsn_data[wsn]['reads']
             wsn_data[wsn]['mis_mean'] = wsn_data[wsn]['mis']/wsn_data[wsn]['reads']
+            wsn_data[wsn]['mut_ratio'] = wsn_data[wsn]['mut_reads']/wsn_data[wsn]['reads']
+            wsn_data[wsn]['ins_ratio'] = wsn_data[wsn]['ins_reads']/wsn_data[wsn]['reads']
+            wsn_data[wsn]['del_ratio'] = wsn_data[wsn]['del_reads']/wsn_data[wsn]['reads']
+            wsn_data[wsn]['mis_ratio'] = wsn_data[wsn]['mis_reads']/wsn_data[wsn]['reads']
             wsn_data[wsn]['alive'] = True if wsn_data[wsn]['reads'] >= th else False
-
         result[e][t].append(wsn_data)
     return result
 

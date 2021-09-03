@@ -60,6 +60,8 @@ if __name__ == '__main__':
                         help='output counts per read.')
     parser.add_argument('--excess', action='store_true',
                         help='output counts per read, over the plasmid sample.')
+    parser.add_argument('--ratio', action='store_true',
+                        help='output ratio to plasmid.')
     args = parser.parse_args()
 
     stgmutpos_dict = stgmutpos(stgmixd_dict_file)
@@ -90,6 +92,35 @@ if __name__ == '__main__':
                 continue
             hist = pos_histogram(stgmutpos_dict, filename)
             print(filename, *(hist[1:]/hist[0] - baseline), sep='\t')
+    if args.ratio:
+        filenames = list(map(lambda x: x.strip(), sys.stdin.readlines()))
+        for filename in filenames:
+            if re.match("Plasmid", filename):
+                referencename = filename
+                baseline = pos_histogram(stgmutpos_dict, filename)
+                baseline = baseline[1:]/baseline[0]
+                break
+        else:
+            print("Error: no reference file.", file=sys.stderr)
+            exit()
+
+        def ratio(data):
+            N = len(data)
+            ret = np.empty(N)
+            for i in range(N):
+                if baseline[i] == 0:
+                    ret[i] = -1
+                else:
+                    ret[i] = data[i]/baseline[i]
+            return np.round(ret, 3)
+
+        print("sample", *header, sep='\t')
+        print(referencename, *baseline, sep='\t')
+        for filename in filenames:
+            if filename == referencename:
+                continue
+            hist = pos_histogram(stgmutpos_dict, filename)
+            print(filename, *ratio(hist[1:]/hist[0]), sep='\t')
     elif args.perread:
         print("sample", *header, sep='\t')
         for filename in inputs():

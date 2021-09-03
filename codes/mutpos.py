@@ -49,8 +49,19 @@ def pos_histogram(stgmutpos_data, wsnstg_filename):
             result += stgmutpos_data[stg] * read
     return result
 
+import sys
+import argparse
+import re
 if __name__ == '__main__':
     stgmixd_dict_file = "../stginfo/whitelist.sorted.stgmixd"
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--perread', action='store_true',
+                        help='output counts per read.')
+    parser.add_argument('--excess', action='store_true',
+                        help='output counts per read, over the plasmid sample.')
+    args = parser.parse_args()
+
     stgmutpos_dict = stgmutpos(stgmixd_dict_file)
 
     header = (
@@ -59,7 +70,33 @@ if __name__ == '__main__':
         + ["X{}".format(i) for i in range(1,21)]
         + ["J{}".format(i) for i in range(21)]
     )
-    print("sample", "reads", *header, sep='\t')
-    for filename in inputs():
-        hist = pos_histogram(stgmutpos_dict, filename)
-        print(filename, *hist, sep='\t')
+
+    if args.excess:
+        filenames = list(map(lambda x: x.strip(), sys.stdin.readlines()))
+        for filename in filenames:
+            if re.match("Plasmid", filename):
+                referencename = filename
+                baseline = pos_histogram(stgmutpos_dict, filename)
+                baseline = baseline[1:]/baseline[0]
+                break
+        else:
+            print("Error: no reference file.", file=sys.stderr)
+            exit()
+
+        print("sample", *header, sep='\t')
+        print(referencename, *baseline, sep='\t')
+        for filename in filenames:
+            if filename == referencename:
+                continue
+            hist = pos_histogram(stgmutpos_dict, filename)
+            print(filename, *(hist[1:]/hist[0] - baseline), sep='\t')
+    elif args.perread:
+        print("sample", *header, sep='\t')
+        for filename in inputs():
+            hist = pos_histogram(stgmutpos_dict, filename)
+            print(filename, *(hist[1:]/hist[0]), sep='\t')
+    else:
+        print("sample", "reads", *header, sep='\t')
+        for filename in inputs():
+            hist = pos_histogram(stgmutpos_dict, filename)
+            print(filename, *hist, sep='\t')

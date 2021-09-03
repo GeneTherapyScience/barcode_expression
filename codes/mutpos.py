@@ -22,7 +22,7 @@ def mutpos_mixd(mixd):
     else:
         ins_list.append(nI)
 
-    return np.array(ins_list + del_list + mis_list, dtype=int)
+    return np.array([1] + ins_list + del_list + mis_list, dtype=int)
 
 def stgmutpos(stgmixd_dict_file):
     mixdmutpos_data = dict()
@@ -36,7 +36,7 @@ def stgmutpos(stgmixd_dict_file):
     return stgmutpos_data
 
 def pos_histogram(stgmutpos_data, wsnstg_filename):
-    W = 61
+    W = 1 + 21 + 20 + 20
     result = np.zeros(W, dtype=int)
     with open(wsnstg_filename) as f:
         f.readline()
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     stgmutpos_dict = stgmutpos(stgmixd_dict_file)
 
     header = ["I{}".format(i) for i in range(21)] + ["D{}".format(i) for i in range(1,21)] + ["X{}".format(i) for i in range(1,21)]
-    print("sample", *header, sep='\t')
+    print("sample", "reads", *header, sep='\t')
     for filename in inputs():
         hist = pos_histogram(stgmutpos_dict, filename)
         print(filename, *hist, sep='\t')

@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
     print('clone', 'day', 'env', 'total-var', 'all-up', 'all-down', 'all-up-ratio', 'all-down-ratio', 'all-(up/down)-ratio', sep='\t')
     for clone in clones:
-        data = ad.get_celllines(clone, datadir=args.datadir, dictfile=args.dictfile, ratio=10**(-5), common = args.common):
+        data = ad.get_celllines(clone, datadir=args.datadir, dictfile=args.dictfile, ratio=10**(-5), common = args.common)
         for e in range(3):
             for t in range(1,3):
                 ret=wsn_updown2(*start_end_reads2(data,e,t),display=False,Ndiv=1)[-1]

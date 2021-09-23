@@ -70,7 +70,8 @@ def start_end_reads2(
     for k in range(3):
         for wsn, d in data0[k].items():
             reads0[wsn] += d['reads']
-    wsns0 = sorted(reads0.keys(), key=lambda x: (reads0[x], x))
+    # Day0のどれかに含まれるWSN。合計が多い順。
+    wsns0 = sorted(reads0.keys(), key=lambda x: (-reads0[x], x))
     start_reads = [[data0[k][wsn]['reads'] for wsn in wsns0] for k in range(3)]
     end_reads = [[data[e][t][k][wsn]['reads'] for wsn in wsns0] for k in range(3)]
     return start_reads, end_reads
@@ -86,8 +87,9 @@ def wsn_updown2(
     start_k = len(start_reads)
     end_k = len(end_reads)
     rng = np.random.Generator(np.random.PCG64()) # 同数の場合ランダムに
-    start_order = (np.array(start_reads)+rng.uniform(0,1/2,(start_k,M))).argsort(axis=1)
-    end_order = (np.array(end_reads)+rng.uniform(0,1/2,(end_k,M))).argsort(axis=1)
+    # 微小乱数を加え、多い順にソート
+    start_order = (-np.array(start_reads)+rng.uniform(0,1/2,(start_k,M))).argsort(axis=1)
+    end_order = (-np.array(end_reads)+rng.uniform(0,1/2,(end_k,M))).argsort(axis=1)
     start_pos = [[-1]*M for _ in range(start_k)]
     end_pos = [[-1]*M for _ in range(end_k)]
     for p in range(M):
@@ -105,9 +107,9 @@ def wsn_updown2(
         ep_max = max(end_pos[k][w] for k in range(end_k))
         ep_min = min(end_pos[k][w] for k in range(end_k))
 
-        if ep_min-sp_max > M*threshold:
+        if sp_min - ep_max > M*threshold:
             up[w] = 1
-        elif ep_max-sp_min < -M*threshold:
+        elif ep_min-sp_max < -M*threshold:
             down[w] = 1
     d = np.linspace(0,M,Ndiv+1)
     ret = []

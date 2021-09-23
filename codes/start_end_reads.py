@@ -184,6 +184,12 @@ import re
 import analyze_data01 as ad
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--datadir', default='./wsnstg_white40_hamm2B/',
+                        help='set datadir.')
+    parser.add_argument('--common', default='.merge.extracted.reformat.white40.filtered.wsnstg',
+                        help='common suffix for filenames.')
+    parser.add_argument('--dictfile', default='./stginfo/whitelist.sorted.stgmixd',
+                        help='stgmixd dict-file.')
     # parser.add_argument('--perread', action='store_true',
     #                     help='output counts per read.')
     args = parser.parse_args()
@@ -196,7 +202,7 @@ if __name__ == '__main__':
 
     print('clone', 'day', 'env', 'total-var', 'all-up', 'all-down', 'all-up-ratio', 'all-down-ratio', 'all-(up/down)-ratio', sep='\t')
     for clone in clones:
-        data = ad.get_celllines(clone, datadir='./wsnstg_white40_hamm2B/', dictfile='./stginfo/whitelist.sorted.stgmixd', ratio=10**(-5), common = '.merge.extracted.reformat.white40.filtered.wsnstg'):
+        data = ad.get_celllines(clone, datadir=args.datadir, dictfile=args.dictfile, ratio=10**(-5), common = args.common):
         for e in range(3):
             for t in range(1,3):
                 ret=wsn_updown2(*start_end_reads2(data,e,t),display=False,Ndiv=1)[-1]

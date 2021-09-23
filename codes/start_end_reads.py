@@ -109,7 +109,7 @@ def wsn_updown2(
 
         if sp_min - ep_max > M*threshold:
             up[w] = 1
-        elif ep_min-sp_max < -M*threshold:
+        elif ep_min-sp_max > M*threshold:
             down[w] = 1
     d = np.linspace(0,M,Ndiv+1)
     ret = []

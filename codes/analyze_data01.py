@@ -60,6 +60,8 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
                 wsn_data[wsn]['ins_reads'] += r * int(di > 0)
                 wsn_data[wsn]['del'] += dd*r
                 wsn_data[wsn]['del_reads'] += r * int(dd > 0)
+                wsn_data[wsn]['insdel'] += (di+dd)*r
+                wsn_data[wsn]['insdel_reads'] += r * int(di>0 or dd>0)
                 wsn_data[wsn]['mis'] += dx*r
                 wsn_data[wsn]['mis_reads'] += r * int(dx > 0)
                 wsn_dist[wsn][d] += r
@@ -73,10 +75,12 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
             wsn_data[wsn]['mut_mean'] = wsn_data[wsn]['mean_all']
             wsn_data[wsn]['ins_mean'] = wsn_data[wsn]['ins']/wsn_data[wsn]['reads']
             wsn_data[wsn]['del_mean'] = wsn_data[wsn]['del']/wsn_data[wsn]['reads']
+            wsn_data[wsn]['insdel_mean'] = wsn_data[wsn]['insdel']/wsn_data[wsn]['reads']
             wsn_data[wsn]['mis_mean'] = wsn_data[wsn]['mis']/wsn_data[wsn]['reads']
             wsn_data[wsn]['mut_ratio'] = wsn_data[wsn]['mut_reads']/wsn_data[wsn]['reads']
             wsn_data[wsn]['ins_ratio'] = wsn_data[wsn]['ins_reads']/wsn_data[wsn]['reads']
             wsn_data[wsn]['del_ratio'] = wsn_data[wsn]['del_reads']/wsn_data[wsn]['reads']
+            wsn_data[wsn]['insdel_ratio'] = wsn_data[wsn]['insdel_reads']/wsn_data[wsn]['reads']
             wsn_data[wsn]['mis_ratio'] = wsn_data[wsn]['mis_reads']/wsn_data[wsn]['reads']
             wsn_data[wsn]['alive'] = True if wsn_data[wsn]['reads'] >= th else False
         result[e][t].append(wsn_data)

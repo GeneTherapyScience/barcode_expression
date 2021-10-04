@@ -145,12 +145,12 @@ def get_stg_cdf(
         f[q].close()
 
 def make_wsn_mut_table(
-    outfile="../wsn_mut_table_{}.tsv",
+    outfile="../wsn_mut_table_{}_a.tsv",
     clones=[('NANOG',112),('NANOG',128),('NANOG',151),('SOX2',98),('SOX2',101),('POU5F1',112),('POU5F1',114)],
     datadir='../wsnstg_white40_hamm2B/',
     ratio=0,
     common='.merge.extracted.reformat.white40.filtered.wsnstg',
-    divs = ['reads','insdel_reads','insdel'],
+    divs = ['reads','insdel_reads','insdel_ratio','insdel','insdel_mean'],
     ):
     # divs = ['mut_mean', 'ins_mean', 'del_mean', 'mis_mean', 'mut_ratio', 'ins_ratio', 'del_ratio', 'mis_ratio']
     E, T, K = 3, 3, 3

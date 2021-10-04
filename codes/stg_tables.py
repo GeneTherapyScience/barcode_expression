@@ -160,11 +160,13 @@ def make_wsn_mut_table(
         long_name = '{}_{}'.format(gene,num)
         short_name = '{}{}'.format(gene[0],num)
 
-        header = [long_name] + [
+        header = ([long_name]
+        + ['total:{}'.format(div) for div in divs]
+        + [
             '{}{}_{}:{}'.format(days[t],env[e] if t > 0 else '',k+1,div)
             for e in range(E) for t in range(T) for k in range(K)
-            for div in divs
-        ]
+            for div in divs if not (e>0 and t==0)
+        ])
         table = defaultdict(list)
         tot_data = ad.get_celllines(long_name, datadir=datadir, ratio=ratio, common=common)
         data = ad.get_celllines(short_name, datadir=datadir, ratio=ratio, common=common)
@@ -179,8 +181,8 @@ def make_wsn_mut_table(
             table[wsn] = (
                 [tot_data[0][0][0][wsn][div] for div in divs]
                 + [data[e][t][k][wsn][div]
-                    for e in range(E) for t in range(T)
-                    for k in range(K) for div in divs if not (e>0 and t==0)])
+                    for e in range(E) for t in range(T) for k in range(K) 
+                    for div in divs if not (e>0 and t==0)])
 
         with open(outfile.format(long_name), 'w') as f:
             print(*header, sep='\t', file=f)

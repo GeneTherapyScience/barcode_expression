@@ -168,31 +168,33 @@ def wsn_updown3(
 
 
 # For in-vivo data
-def read_PDH_data(dir = '../metastasis_hamm2/'):
+def read_PDH_data(
+    dir = '../metastasis_hamm2/',
+    basefile = "F10_3-10-7_R2.tr.filtered.3030.hamm2.uniq",
+    files = [
+        ["F10_PBS-{}_R2.tr.filtered.3030.hamm2.uniq".format(i+1) for i in range(3)] + ["2F10-PBS-4_R2.tr.filtered.3030.hamm2.uniq"],
+        ["2F10-DTIC-{}_R2.tr.filtered.3030.hamm2.uniq".format(i+1) for i in range(5)],
+        ["2F10-HVJ-{}_R2.tr.filtered.3030.hamm2.uniq".format(i+1) for i in range(3)],
+    ]
+    ):
     rng = np.random.Generator(np.random.PCG64())
 
-    basefile = os.path.join(dir, "F10_3-10-7_R2.tr.filtered.3030.hamm2.uniq")
-    files = list()
-    files.append(list())
-    for i in range(3):
-        files[-1].append(os.path.join(dir, "F10_PBS-{}_R2.tr.filtered.3030.hamm2.uniq".format(i+1)))
-    files[-1].append(os.path.join(dir, "2F10-PBS-4_R2.tr.filtered.3030.hamm2.uniq"))
-    files.append(list())
-    for i in range(5):
-        files[-1].append(os.path.join(dir, "2F10-DTIC-{}_R2.tr.filtered.3030.hamm2.uniq".format(i+1)))
-    files.append(list())
-    for i in range(3):
-        files[-1].append(os.path.join(dir, "2F10-HVJ-{}_R2.tr.filtered.3030.hamm2.uniq".format(i+1)))
+    basefile_path = os.path.join(dir, basefile)
+    files_path = list()
+    for i in range(len(files)):
+        files_path.append(list())
+        for j in range(len(files[i])):
+            files_path[i].append(os.path.join(dir, files[i][j]))
 
     base_reads = defaultdict(int)
-    with open(basefile) as f:
+    with open(basefile_path) as f:
         for line in f.readlines():
             n, wsn = line.split()
             base_reads[wsn] = int(n)
 
     wsns = set()
     wsn_reads = list()
-    for fl in files:
+    for fl in files_path:
         wsn_reads.append(list())
         for fn in fl:
             wsn_reads[-1].append(defaultdict(int))

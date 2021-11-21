@@ -3,10 +3,11 @@ from barcodelib import inputs
 import numpy as np
 from bisect import bisect_left, bisect_right
 from scipy import stats
-from math import log10
+import math
 
 key = 'insdel_mean'
 p_th = 0.05
+STAT_N = 10**8
 
 def get_order(arr, reverse=False):
     order = []
@@ -21,6 +22,15 @@ def get_order(arr, reverse=False):
 
 def order2score(x):
     return x
+
+def test_score(target, remnant):
+    return np.log(target).mean() - np.log(remnant).mean()
+
+def reference_distribution(N, Ntarget, Nremnant):
+    rng = np.random.Generator(np.random.PCG64())
+    ret = [np.log(rng.uniform(0,1,Ntarget)).mean() - np.log(rng.uniform(0,1,Nremnant)).mean() for _ in range(N)]
+    ret.sort()
+    return ret
 
 if __name__ == '__main__':
     headers = input().split()
@@ -45,6 +55,8 @@ if __name__ == '__main__':
             if envs[k] in key_headers[i]:
                 env_columns[k].append(i)
                 break
+    C = len(env_columns[0])
+    reference = reference_distribution(STAT_N-1, C, C*2)
     for j in range(N):
         scores = [list() for _ in range(K)]
         for k in range(K):
@@ -56,12 +68,15 @@ if __name__ == '__main__':
             for l in range(K):
                 if l != k:
                     remnant += scores[l]
-            t, p = stats.ttest_ind(target, remnant, equal_var = False)
-            if p < p_th_eff:
-                target_mean = sum(target)/len(target)
-                remnant_mean = sum(remnant)/len(remnant)
-                if target_mean > remnant_mean:
-                    sign = '+'
-                else:
+            # t, p = stats.ttest_ind(target, remnant, equal_var = False)
+            s = test_score(target, remnant)
+            p = (bisect_left(reference, s) + 1) / STAT_N
+
+            if p < p_th_eff or 1-p < p_th_eff:
+                if p < p_th_eff:
                     sign = '-'
+                else:
+                    sign = '+'
+                target_mean = math.exp(np.log(target).mean())
+                remnant_mean = math.exp(np.log(remnant).mean())
                 print(barcodes[j], j, k, sign, target_mean, remnant_mean, p*N, sep='\t')

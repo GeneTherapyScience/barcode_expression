@@ -3,6 +3,7 @@ from barcodelib import inputs
 import numpy as np
 from bisect import bisect_left, bisect_right
 from scipy import stats
+from math import log10
 
 key = 'insdel_mean'
 p_th = 0.05
@@ -18,6 +19,8 @@ def get_order(arr, reverse=False):
         order.append(N-1-m if reverse else m)
     return order
 
+def order2score(x):
+    return x
 
 if __name__ == '__main__':
     headers = input().split()
@@ -46,7 +49,7 @@ if __name__ == '__main__':
         scores = [list() for _ in range(K)]
         for k in range(K):
             for i in env_columns[k]:
-                scores[k].append(orders[i][j])
+                scores[k].append(order2score(orders[i][j]))
         for k in range(K):
             target = scores[k]
             remnant = []
@@ -55,8 +58,10 @@ if __name__ == '__main__':
                     remnant += scores[l]
             t, p = stats.ttest_ind(target, remnant, equal_var = False)
             if p < p_th_eff:
-                if sum(target)/len(target) > sum(remnant)/len(remnant):
+                target_mean = sum(target)/len(target)
+                remnant_mean = sum(remnant)/len(remnant)
+                if target_mean > remnant_mean:
                     sign = '+'
                 else:
                     sign = '-'
-                print(j, k, sign, p*N, sep='\t')
+                print(barcodes[j], j, k, sign, target_mean, remnant_mean, p*N, sep='\t')

@@ -9,7 +9,7 @@ key = 'insdel_mean'
 p_th = 0.05
 STAT_N = 10**8
 
-def get_order(arr, reverse=False):
+def get_order(arr, reverse=True):
     order = []
     N = len(arr)
     vals = sorted(arr)

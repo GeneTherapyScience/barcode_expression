@@ -22,6 +22,7 @@ def get_order(arr, reverse=False):
 
 def get_deviation(arr):
     arr = np.array(arr)
+    print(arr)
     m = arr.mean()
     sigma = arr.std(ddof=1)
     return (arr - m) / sigma
@@ -49,7 +50,7 @@ if __name__ == '__main__':
         line_values = line.split()
         barcodes.append(line_values[0])
         for i in range(W):
-            values[i].append(line_values[key_columns[i]])
+            values[i].append(float(line_values[key_columns[i]]))
     orders = [get_order(values[i]) for i in range(W)]
     N = len(orders[0])
     p_th_eff = p_th/N
@@ -75,12 +76,13 @@ if __name__ == '__main__':
                 if l != k:
                     remnant += scores[l]
             # t, p = stats.ttest_ind(target, remnant, equal_var = False)
-            s = test_score(target, remnant)
+            # s = test_score(target, remnant)
             # p = (bisect_left(reference, s) + 1) / STAT_N
 
 #            if p < p_th_eff or 1-p < p_th_eff:
-            target_mean = math.exp(np.log(target).mean())
-            remnant_mean = math.exp(np.log(remnant).mean())
+            target_mean = np.array(target).mean()
+            remnant_mean = np.array(remnant).mean()
+            s = target_mean - remnant_mean
             if s < 0:
                 sign = '-'
             else:

@@ -20,6 +20,12 @@ def get_order(arr, reverse=False):
         order.append(N-1-m if reverse else m)
     return order
 
+def get_deviation(arr):
+    arr = np.array(arr)
+    m = arr.mean()
+    sigma = arr.std(ddof=1)
+    return (arr - m) / sigma
+
 def order2score(x):
     return x
 

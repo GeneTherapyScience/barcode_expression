@@ -55,8 +55,8 @@ if __name__ == '__main__':
             if envs[k] in key_headers[i]:
                 env_columns[k].append(i)
                 break
-    C = len(env_columns[0])
-    reference = reference_distribution(STAT_N-1, C, C*2)
+    # C = len(env_columns[0])
+    # reference = reference_distribution(STAT_N-1, C, C*2)
     for j in range(N):
         scores = [list() for _ in range(K)]
         for k in range(K):
@@ -70,13 +70,13 @@ if __name__ == '__main__':
                     remnant += scores[l]
             # t, p = stats.ttest_ind(target, remnant, equal_var = False)
             s = test_score(target, remnant)
-            p = (bisect_left(reference, s) + 1) / STAT_N
+            # p = (bisect_left(reference, s) + 1) / STAT_N
 
-            if p < p_th_eff or 1-p < p_th_eff:
-                if p < p_th_eff:
-                    sign = '-'
-                else:
-                    sign = '+'
-                target_mean = math.exp(np.log(target).mean())
-                remnant_mean = math.exp(np.log(remnant).mean())
-                print(barcodes[j], j, k, sign, target_mean, remnant_mean, p*N, sep='\t')
+#            if p < p_th_eff or 1-p < p_th_eff:
+            target_mean = math.exp(np.log(target).mean())
+            remnant_mean = math.exp(np.log(remnant).mean())
+            if s < 0:
+                sign = '-'
+            else:
+                sign = '+'
+            print(barcodes[j], j, k, sign, target_mean, remnant_mean, s, sep='\t')

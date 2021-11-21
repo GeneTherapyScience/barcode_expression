@@ -16,8 +16,8 @@ def get_order(arr, reverse=True):
     for v in arr:
         l = bisect_left(vals, v)
         r = bisect_right(vals, v)
-        m = (l+r-1)//2 if (l+r)%2 else (l+r-1)/2
-        order.append(N-1-m if reverse else m)
+        m = (l+r+1)//2 if (l+r)%2 else (l+r+1)/2
+        order.append(N+1-m if reverse else m)
     return order
 
 def get_deviation(arr):
@@ -80,8 +80,10 @@ if __name__ == '__main__':
             # p = (bisect_left(reference, s) + 1) / STAT_N
 
 #            if p < p_th_eff or 1-p < p_th_eff:
-            target_mean = np.array(target).mean()
-            remnant_mean = np.array(remnant).mean()
+            # target_mean = np.array(target).mean()
+            # remnant_mean = np.array(remnant).mean()
+            target_mean = math.exp(np.log(target).mean())
+            remnant_mean = math.exp(np.log(remnant).mean())
             s = target_mean - remnant_mean
             if s < 0:
                 sign = '-'

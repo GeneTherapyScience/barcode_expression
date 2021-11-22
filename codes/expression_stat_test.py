@@ -84,9 +84,10 @@ if __name__ == '__main__':
             # remnant_mean = np.array(remnant).mean()
             target_mean = math.exp(np.log(target).mean())
             remnant_mean = math.exp(np.log(remnant).mean())
-            s = target_mean - remnant_mean
+            s = math.log(target_mean/remnant_mean)
+            t = np.log(np.array(target)/N).sum() + np.log(1-np.array(remnant)/N).sum()
             if s < 0:
                 sign = '-'
             else:
                 sign = '+'
-            print(barcodes[j], j, k, sign, target_mean, remnant_mean, s, sep='\t')
+            print(barcodes[j], j, k, sign, target_mean, target, remnant_mean, remnant, s, t, sep='\t')

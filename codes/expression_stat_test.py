@@ -20,6 +20,22 @@ def get_order(arr, reverse=True):
         order.append(N+1-m if reverse else m)
     return order
 
+def get_scores(arr):
+    scores = []
+    N = len(arr)
+    vals = sorted(arr)
+    M = bisect_right(vals, 0)
+    for v in arr:
+        if v <= 0:
+            s = 0
+        else:
+            l = bisect_left(vals, v)
+            r = bisect_right(vals, v)
+            m = (l+r-1)/2
+            s = (m+1-M)/(N-M)
+        scores.append(s)
+    return scores
+
 def get_deviation(arr):
     arr = np.array(arr)
     print(arr)
@@ -51,8 +67,8 @@ if __name__ == '__main__':
         barcodes.append(line_values[0])
         for i in range(W):
             values[i].append(float(line_values[key_columns[i]]))
-    orders = [get_order(values[i]) for i in range(W)]
-    N = len(orders[0])
+    all_scores = [get_scores(values[i]) for i in range(W)]
+    N = len(all_scores[0])
     p_th_eff = p_th/N
     envs = ['NT', 'DTX', 'Sp']
     K = len(envs)
@@ -68,7 +84,7 @@ if __name__ == '__main__':
         scores = [list() for _ in range(K)]
         for k in range(K):
             for i in env_columns[k]:
-                scores[k].append(order2score(orders[i][j]))
+                scores[k].append(all_scores[i][j])
         for k in range(K):
             target = scores[k]
             remnant = []
@@ -82,12 +98,7 @@ if __name__ == '__main__':
 #            if p < p_th_eff or 1-p < p_th_eff:
             # target_mean = np.array(target).mean()
             # remnant_mean = np.array(remnant).mean()
-            target_mean = math.exp(np.log(target).mean())
-            remnant_mean = math.exp(np.log(remnant).mean())
-            s = math.log(target_mean/remnant_mean)
-            t = np.log(np.array(target)/N).sum() + np.log(1-np.array(remnant)/N).sum()
-            if s < 0:
-                sign = '-'
-            else:
-                sign = '+'
-            print(barcodes[j], j, k, sign, target_mean, target, remnant_mean, remnant, s, t, sep='\t')
+            target_mean = np.array(target).mean()
+            remnant_mean = np.array(remnant).mean()
+            s = target_mean - remnant_mean
+            print(barcodes[j], j, k, '{:.8f}'.format(target_mean), target, '{:.8f}'.format(remnant_mean), remnant, '{:.8f}'.format(s), sep='\t')

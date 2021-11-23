@@ -32,7 +32,7 @@ def get_scores(arr):
             l = bisect_left(vals, v)
             r = bisect_right(vals, v)
             m = (l+r-1)/2
-            s = (m+1-M)/(N-M)
+            s = 2*(m+1-M)/(N-M)*(N/(N-M+1))
         scores.append(s)
     return scores
 

@@ -4,6 +4,7 @@ import numpy as np
 from bisect import bisect_left, bisect_right
 from scipy import stats
 import math
+import sys
 
 key = 'insdel_mean'
 p_th = 0.05
@@ -55,6 +56,29 @@ def reference_distribution(N, Ntarget, Nremnant):
     ret.sort()
     return ret
 
+class StatJudge:
+    def __init__(self, zero_ratio, N=10**8, K=3):
+        self.N = N
+        alpha = np.array(zero_ratio)
+        p = 2/(1-alpha)**2
+        rng = np.random.Generator(np.random.PCG64())
+        W = len(alpha)
+        V = W//3
+        self.experience = [list() for _ in range(K)]
+        for _ in range(self.N):
+            x = (rng.uniform(0,1,W) - alpha) * p
+            s0 = np.where(x>0, x, 0)
+            s1 = np.array([s0[V*k:V*(k+1)].sum() for k in range(K)])
+            S = s1.sum()
+            for k in range(K):
+                self.experience[k].append(s0[k]*2 - S)
+        for k in range(K):
+            self.experience[k].sort()
+
+    def __call__(self, s, k):
+        return (self.N - bisect_left(self.experience[k], s))/self.N
+
+
 if __name__ == '__main__':
     headers = input().split()
     key_columns = [i for i in range(len(headers)) if headers[i].split(':')[-1]==key]
@@ -68,6 +92,7 @@ if __name__ == '__main__':
         for i in range(W):
             values[i].append(float(line_values[key_columns[i]]))
     all_scores = [get_scores(values[i]) for i in range(W)]
+    zero_ratio = [values[i].count(0)/len(values[i]) for i in range(W)]
     N = len(all_scores[0])
     p_th_eff = p_th/N
     envs = ['NT', 'DTX', 'Sp']
@@ -80,6 +105,7 @@ if __name__ == '__main__':
                 break
     # C = len(env_columns[0])
     # reference = reference_distribution(STAT_N-1, C, C*2)
+    stat_judge = StatJudge(zero_ratio, N=10**7)
     for j in range(N):
         scores = [list() for _ in range(K)]
         for k in range(K):
@@ -101,4 +127,5 @@ if __name__ == '__main__':
             target_mean = np.array(target).mean()
             remnant_mean = np.array(remnant).mean()
             s = target_mean - remnant_mean
-            print(barcodes[j], j, k, '{:.8f}'.format(target_mean), target, '{:.8f}'.format(remnant_mean), remnant, '{:.8f}'.format(s), sep='\t')
+            p = stat_judge(s, k)
+            print(barcodes[j], j, k, '{:.8f}'.format(target_mean), target, '{:.8f}'.format(remnant_mean), remnant, '{:.8f}'.format(s), p, sep='\t')

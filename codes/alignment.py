@@ -43,7 +43,7 @@ def seq_alignment(template, target, gap=2.5, extend=0.5, substitution=1, bound=N
             ], dtype=int)
             candidates[0,0] -= epsilon
             candidates[2,2] += extend - gap # continue insertion
-            candidates[3,3] += extend - gap # delete insertion
+            candidates[3,3] += extend - gap # continue deletion
             k = 3 - candidates[:,::-1].argmin(axis=-1)
             cur[n] = [candidates[i][k[i]] for i in range(4)]
             if not only_distance:

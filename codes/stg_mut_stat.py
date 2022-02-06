@@ -44,8 +44,8 @@ if __name__=='__main__':
                 m1 = (np.tensordot(mu,reads,((0,1),(0,1))) - mu[max_e] @ reads[max_e]) / (reads.sum() - reads[max_e].sum())
                 V0 = (V[max_e] + mu[max_e]**2) @ reads[max_e] / reads[max_e].sum() - m0*m0
                 V1 = (np.tensordot(V+mu**2, reads, ((0,1),(0,1))) - (V[max_e]+mu[max_e]**2) @ reads[max_e]) / (reads.sum() - reads[max_e].sum()) - m1*m1
-                if min(V0,V1) <= 0:
-                    print(V0, V1, file=sys.stderr)
+                # if min(V0,V1) <= 0:
+                #     print(V0, V1, file=sys.stderr)
                 sigma = np.sqrt(V0 + V1)
                 if m0 <= m1:
                     continue

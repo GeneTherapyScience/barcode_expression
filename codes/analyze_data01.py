@@ -53,6 +53,8 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
                 r = int(r)
                 mixd = mixd_dictionary[stg]
                 d, di, dx, dd = barcodelib.mixd_distance(mixd)
+                if wsn not in wsn_data:
+                    wsn_data[wsn]['insdel_data'] = defaultdict(int)
                 wsn_data[wsn]['reads'] += r
                 wsn_data[wsn]['muts'] += r * int(d > 0)
                 wsn_data[wsn]['mut_reads'] = wsn_data[wsn]['muts']
@@ -60,6 +62,7 @@ def get_celllines(sample, datadir='../wsnstg_white40/', dictfile='../stginfo/whi
                 wsn_data[wsn]['ins_reads'] += r * int(di > 0)
                 wsn_data[wsn]['del'] += dd*r
                 wsn_data[wsn]['del_reads'] += r * int(dd > 0)
+                wsn_data[wsn]['insdel_data'][di+dd] += r
                 wsn_data[wsn]['insdel'] += (di+dd)*r
                 wsn_data[wsn]['insdel2'] += (di+dd)*(di+dd)*r
                 wsn_data[wsn]['insdel_reads'] += r * int(di>0 or dd>0)

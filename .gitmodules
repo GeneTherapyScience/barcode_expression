@@ -1,0 +1,3 @@
+[submodule "codes/matthijsz/weightedcorr"]
+	path = codes/matthijsz/weightedcorr
+	url = https://github.com/matthijsz/weightedcorr.git

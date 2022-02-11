@@ -35,7 +35,6 @@ if __name__ == '__main__':
 
             ret = [0]*K
             for j in range(N):
-                scores = [list() for _ in range(K)]
                 for k in range(K):
                     for i in env_columns[k]:
                         if values[i][j]:

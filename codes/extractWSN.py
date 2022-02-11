@@ -48,7 +48,7 @@ if __name__ == '__main__':
     else:
         if not args.noheader:
             header = input()
-            if not onlybarcode:
+            if not args.onlybarcode:
                 print(header)
         for line in inputs():
             record = line.split()

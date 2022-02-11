@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 ###
-# usage: # python3 merge_readerror.py [-n] [-w warnings.output] [-r reference.data] < input.data > output.data
+# usage: # python3 merge_readerror.py [-n] [-w warnings.output] [-r reference.uniq] < input.uniq > output.uniq
 ###
 import os
 import sys
@@ -31,39 +31,16 @@ if test_flag:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-r', '--reference', default=None,
-                        help='give reference barcodes.')
-    parser.add_argument('--refcolumn', type=int, default=0,
-                        help='barcode column in reference (default=0).')
-    parser.add_argument('--refgroup', default=None,
-                        help='give reference groups.')
     parser.add_argument('-w', '--warningout', default=None,
                         help='file to output warnings.')
-    parser.add_argument('-u', '--union', action='store_true',
-                        help='pack all relatives by union-find algorithm.')
-    parser.add_argument('-g', '--groupout', default=None,
-                        help='file to output groups of merged relatives.')
     parser.add_argument('-n', '--noprogress', action='store_true',
                         help='do not show a progress bar.')
-    parser.add_argument('-l', '--loadfile', default=None,
-                        help='file to load halfway results.')
-    parser.add_argument('-m', '--milestonefile', default=None,
-                        help='file to save halfway results.')
     parser.add_argument('--noheader', action='store_true',
                         help='the input does not include header.')
-    parser.add_argument('--refnoheader', action='store_true',
-                        help='the reference does not include header.')
-    parser.add_argument('--skipN', action='store_true',
-                        help='skip N-including barcodes.')
     parser.add_argument('--hamming', action='store_true',
                         help='Use Hamming distance, instead of Levenshtein.')
-    parser.add_argument('--errors', action='store_true',
-                        help='output number of errors.')
     parser.add_argument('--max_errors', type=int, default=max_errors,
                         help='set max_errors. (default:{})'.format(max_errors))
-    parser.add_argument('--drop', action='store_true',
-                        help='Drop rather than merge.')
-    parser.add_argument('--expandN_bound', type=int, default=expandN_bound)
     args = parser.parse_args()
     if args.warningout:
         warningout = open(args.warningout, 'w')
@@ -78,130 +55,40 @@ if __name__ == '__main__':
         get_distance = levenshtein_distance
         get_neighbors = levenshtein_neighbors
 
-    header, data = inputdata(has_header=(not args.noheader))
-    if args.skipN:
-        data = list(filter(lambda record: (not 'N' in record[0]), data))
+    data = []
+    if not args.noheader:
+        header = input()
+    else:
+        header = None
+    for line in inputs():
+        num, arr = line.split()
+        num = int(num)
+        if 'N' in arr: # skipN
+            continue
+        else:
+            data.append((num, arr))
+    data.sort()
     N = len(data)
 
-    start_i, halfway_barcodes, merged_readnum, merged_mutations = load_halfway(args.loadfile)
-    merged_barcodes = readref(args.reference, column=args.refcolumn, has_header=(not args.refnoheader)) | halfway_barcodes
-    uf = UnionFind()
-    if args.refgroup:
-        with open(args.refgroup) as f:
-            for line in inputs(f):
-                g = line.split()
-                p = g[0]
-                merged_barcodes.add(p)
-                for c in g[1:]:
-                    uf.merge(p, c)
-                    merged_barcodes.add(c)
+    remaining_barcodes = {arr for num, arr in data}
+    output = []
 
-    start_t = int(time.time())
-    save_t = start_t + save_interval
+    start_i = 0
     if args.noprogress:
         barcode_loop = range(start_i,N)
     else:
         barcode_loop = tqdm(range(start_i,N), total=N, initial=start_i)
     for i in barcode_loop:
-        if time.time() > save_t:
-            save_t += save_interval
-            save_halfway(args.milestonefile, merged_barcodes, merged_readnum, merged_mutations, i)
-
-        barcode, readnum, mutations = data[i]
-        NN = barcode.count('N')
-        if NN <= args.expandN_bound:
-            hit = False
-            for c in get_neighbors(barcode, max_errors):
-                if NN:
-                    loop = N_candidates(c)
-                else:
-                    loop = [c]
-                for d in loop:
-                    if d in merged_barcodes:
-                        if barcode != d and (not uf.connected(d, barcode)):
-                            print('Merge', barcode, 'as', d, sep='\t', file=warningout)
-                            uf.merge(d, barcode)
-                        if not hit:
-                            td = uf.root(d) if args.union else d
-                            if not args.drop:
-                                merged_readnum[td] += readnum
-                                merged_mutations[td] += mutations
-                            if (not args.reference) and args.union:
-                                merged_barcodes.add(barcode)
-                            hit = True
-                        if args.errors:
-                            errors += get_distance(d,barcode,max_errors) * readnum
-                        if not args.union:
-                            break
-                else:
-                    continue
+        readnum, barcode = data[i]
+        remaining_barcodes.remove(barcode)
+        for d in get_neighbors(barcode, max_errors):
+            if d in remaining_barcodes:
+                print('Sequence', barcode, 'is an error of', d, sep='\t', file=warningout)
                 break
-            if not hit:
-                if args.reference:
-                    print('Not found in the reference:', barcode, sep='\t', file=warningout)
-                else:
-                    if 'N' in barcode:
-                        print('N-including barcode', barcode, 'has no parent array.', file=warningout)
-                    merged_barcodes.add(barcode)
-                    merged_readnum[barcode] += readnum
-                    merged_mutations[barcode] += mutations
         else:
-            for target in merged_barcodes:
-                distance = get_distance(barcode, target, max_errors)
-                if distance <= max_errors:
-                    if not args.drop:
-                        merged_readnum[target] += readnum
-                        merged_mutations[target] += mutations
-                    if args.errors:
-                        errors += distance * readnum
-                    break
-            else:
-                if args.reference:
-                    print('The sequence {} was not found in the reference.'.format(barcode), file=warningout)
-                else:
-                    if NN > 0:
-                        print('N-including barcode', barcode, 'has no parent array.', file=warningout)
-                    merged_barcodes.add(barcode)
-                    merged_readnum[barcode] += readnum
-                    merged_mutations[barcode] += mutations
+            output.append((readnum, barcode))
 
     if header:
         print(header)
-    if args.union:
-        for barcode in merged_barcodes:
-            root = uf.root(barcode)
-            if root != barcode:
-                if args.drop:
-                    print('Drop', barcode)
-                else:
-                    print('Merge', barcode, 'as', root, sep='\t', file=warningout)
-                    merged_readnum[root] += merged_readnum[barcode]
-                    merged_mutations[root] += merged_mutations[barcode]
-                    del merged_readnum[barcode], merged_mutations[barcode]
-    for barcode in sorted(merged_readnum.keys()):
-        readnum, mutations = merged_readnum[barcode], merged_mutations[barcode]
-        if readnum == 0:
-            ratio = 'NA'
-        elif mutations == 0:
-            ratio = 0
-        elif mutations == readnum:
-            ratio = 1
-        else:
-            ratio = mutations / readnum
-        print(barcode, readnum, mutations, ratio, sep='\t')
-
-    if args.groupout:
-        groups = defaultdict(list)
-        for barcode in uf.elements():
-            root = uf.root(barcode)
-            if root == barcode:
-                groups[root]
-            else:
-                groups[root].append(barcode)
-        with open(args.groupout, 'w') as gout:
-            for p, c in groups.items():
-                print(p, *c, sep='\t', file=gout)
-
-    if args.errors:
-        print(file=sys.stderr)
-        print('Read-errors:', errors, file=sys.stderr)
+    for readnum, barcode in sorted(output, reverse=True):
+        print(readnum, barcode, sep='\t')

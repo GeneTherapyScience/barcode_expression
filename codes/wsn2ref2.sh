@@ -4,7 +4,7 @@ suffix=".wsn"
 newsuffix=".ref.uniq"
 progsuffix=".ref.progress.$$"
 progdir="progress"
-merge_script="../codes/merge_readerror2.py"
+merge_script="../codes/merge_readerror.py"
 python="pypy"
 mkdir -p ${progdir}
 for filename in "$@"

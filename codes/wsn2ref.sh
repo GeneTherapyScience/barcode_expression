@@ -15,7 +15,7 @@ do
     if [ ! -e ${output} ]; then
         tail +2 ${filename} \
         | awk 'length($1)==30 {print $2 "\t" $1}' \
-        | ${python} ${merge_script} -w /dev/null --noheader --hamming --max_error 1 \
+        | ${python} ${merge_script} -w /dev/null --noheader --hamming --max_error 2 \
         2> ${progress} \
         | sort -n -r > ${output}
     fi

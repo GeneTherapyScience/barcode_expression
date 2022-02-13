@@ -1,3 +1,4 @@
+import scipy
 from scipy.special import comb
 import itertools
 import numpy as np

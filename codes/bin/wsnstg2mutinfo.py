@@ -5,6 +5,7 @@ import re
 from collections import defaultdict
 from judge_stg import read_args
 from math import ceil
+sys.path.append('../lib')
 from barcodelib import inputs, get_distance_dictionary
 
 usage = """\

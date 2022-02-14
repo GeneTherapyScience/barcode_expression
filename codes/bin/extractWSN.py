@@ -1,4 +1,6 @@
 import argparse
+import sys
+sys.path.append('../lib')
 from barcodelib import inputs
 from collections import defaultdict
 Nwsn = 10

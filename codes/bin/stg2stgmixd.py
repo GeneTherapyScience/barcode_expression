@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../lib')
 from alignment import seq_alignment
 from barcodelib import inputs
 from tqdm import trange

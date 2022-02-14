@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../lib')
 from barcodelib import inputs
 import numpy as np
 

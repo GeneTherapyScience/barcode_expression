@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../lib')
+sys.path.append('../thirdparty')
 import analyze_data01 as ad
 from itertools import product
 from scipy.stats import spearmanr, weightedtau

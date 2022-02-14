@@ -1,4 +1,5 @@
 import sys
+sys.path.append('../lib')
 from scipy.spatial.distance import jensenshannon
 from barcodelib import inputs
 import numpy as np

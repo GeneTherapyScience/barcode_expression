@@ -1,4 +1,6 @@
 #!/user/bin/env python3
+import sys
+sys.path.append('../lib')
 from barcodelib import *
 from alignment import *
 from random import randrange

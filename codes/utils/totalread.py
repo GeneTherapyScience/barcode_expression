@@ -1,4 +1,7 @@
 #!/user/bin/env python
+import sys
+sys.path.append('../lib')
+sys.path.append('../bin')
 from barcodelib import *
 from wsnstg2mutinfo import wsn_thres
 from bisect import bisect_left

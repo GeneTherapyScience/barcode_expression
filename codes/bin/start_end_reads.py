@@ -184,6 +184,7 @@ def wsn_updown3(
 import sys
 import argparse
 import re
+sys.path.append('../lib')
 import analyze_data01 as ad
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

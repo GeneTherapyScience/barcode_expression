@@ -3,6 +3,8 @@ import sys
 import os
 import re
 from collections import defaultdict
+import sys
+sys.path.append('../lib')
 from barcodelib import inputs
 
 in_suffix = 'wsnstg'

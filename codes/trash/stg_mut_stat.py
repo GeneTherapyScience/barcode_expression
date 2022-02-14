@@ -1,4 +1,4 @@
-import analyze_data01 as ad
+import ..lib.analyze_data01 as ad
 from itertools import product
 # from scipy.stats import spearmanr, weightedtau
 import numpy as np

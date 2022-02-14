@@ -1,7 +1,8 @@
 #!/user/bin/env python
+import sys
+sys.path.append('../lib')
 from barcodelib import *
 import argparse
-import sys
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -6,6 +6,7 @@ import os
 import sys
 from tqdm import tqdm, trange
 import re
+sys.path.append('../lib')
 from barcodelib import inputs
 from alignment import seq_distance
 

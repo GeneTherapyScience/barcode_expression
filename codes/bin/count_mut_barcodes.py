@@ -1,4 +1,6 @@
 from collections import defaultdict
+import sys
+sys.path.append('../lib')
 from barcodelib import inputs
 import numpy as np
 from bisect import bisect_left, bisect_right

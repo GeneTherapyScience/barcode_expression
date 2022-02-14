@@ -10,6 +10,7 @@ from tqdm import tqdm
 import time
 import shutil
 import itertools
+sys.path.append('../lib')
 from barcodelib import *
 
 max_errors = 2

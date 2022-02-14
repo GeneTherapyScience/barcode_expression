@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import sys
+sys.path.append('../lib')
 from barcodelib import inputs
 
 plasmid_file = "Plasmid_20nt345.merge.extracted.reformat.white40.ref.uniq"

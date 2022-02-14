@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../lib')
 import numpy as np
 import analyze_data01 as ad
 import sys

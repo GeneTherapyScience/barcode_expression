@@ -4,6 +4,7 @@
 ###
 
 import sys
+sys.path.append('../lib')
 from barcodelib import inputs
 from alignment import seq_distance
 

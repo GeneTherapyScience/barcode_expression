@@ -3,6 +3,7 @@ import sys
 import os
 from collections import defaultdict
 import re
+sys.path.append('../lib')
 from alignment import seq_alignment
 from barcodelib import inputs
 

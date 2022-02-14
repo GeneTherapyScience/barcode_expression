@@ -26,8 +26,6 @@
 - stg_reads_corr.py : Output tables of Pearson/Spearman correlations between reads & mutations.
 - stg_tables.py : Make mutation data table from .wsnstg files.
 - stg_valid_barcodes.py : Extract barcodes included in all of the reference & given datafiles.
-- survey_orphans.py : Give nearest barcodes & distance for some sampled barcodes.
-- survey_orphans2.py : Give how many barcodes are within given radius, for some sampled barcodes.
 - take_subset.py : Make a random-extraction without replacement, from a dataset given to stdin.
 - wsnstg2mutinfo.py : Make `.mutinfo` files including basic mutation data for each barcode, from `.wsnstg` files.
 - wsnstg2stg.py : Make `.stg` files including reads, WSN variations and MIXD alignment for each stg sequence, from `.wsnstg` files.
@@ -45,5 +43,7 @@
 - random_barcode.py : Generate list of random WSN barcodes.
 - random_variations.py : Simulate variations after incubations.
 - showprogress : Show the last lines of given files.
+- survey_orphans.py : Give nearest barcodes & distance for some sampled barcodes.
+- survey_orphans2.py : Give how many barcodes are within given radius, for some sampled barcodes.
 - totalread.py : Output variations, reads, mutatiion and shannon-variation of a dataset given to stdin.
 - wsn2ref.sh : Make merged dataset with length 30, using merge_readerror.py

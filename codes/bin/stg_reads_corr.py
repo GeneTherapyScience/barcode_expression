@@ -22,6 +22,8 @@ if __name__=='__main__':
                         help='pearson correlation')
     parser.add_argument('--spearman', action='store_true',
                         help='spearman correlation')
+    parser.add_argument('--includezero', action='store_true',
+                        help='include read=mut=0 barcodes.')
     args = parser.parse_args()
 
     # print('Weighted correlations : Pearson & Spearman')
@@ -32,8 +34,9 @@ if __name__=='__main__':
             cur = data[e][t][k]
             reads, insdel_mean = [], []
             for wsn in cur:
-                reads.append(cur[wsn]['reads'])
-                insdel_mean.append(cur[wsn]['insdel_mean'])
+                if args.includezero or cur[wsn]['reads'] > 0:
+                    reads.append(cur[wsn]['reads'])
+                    insdel_mean.append(cur[wsn]['insdel_mean'])
             #corr, pvalue = spearmanr(reads, insdel_mean)
             #corr, pvalue = weightedtau(reads, insdel_mean, weigher=lambda i: weights[i])
             wc = WeightedCorr(x=pd.Series(reads),y=pd.Series(insdel_mean),w=pd.Series(reads))

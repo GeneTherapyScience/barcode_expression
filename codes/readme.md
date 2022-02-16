@@ -5,7 +5,7 @@
   $ python3 checkWSN.py < sample.wsn > output
   ```
 
-- compare_data.py : Compute correlations (Pearson/Spearman) between two dataset of barcode-reads.
+- compare_data.py : Compute correlations (Pearson/Spearman) between two datasets of barcode-reads.
   ```bash
   $ python3 compare_data.py sample1.wsn sample2.wsn > output
   ```

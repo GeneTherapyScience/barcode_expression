@@ -51,7 +51,6 @@
   $ python3 checkWSN.py < sample.wsn
   ```
 
-  output ex.)
   ```
   100%|██████████████████████████████████████████████████████| 517760/517760 [02:35<00:00, 3319.73it/s]
   Variation-base: avarage = 0.0919171044499382, distribution = [(0, 473317), (1, 41602), (2, 2582), (3, 220), (4, 32), (5, 5), (6, 2)]
@@ -63,7 +62,6 @@
   $ python3 compare_data.py sample1.wsn sample2.wsn
   ```
   
-  output ex.)
   ```
   Pearson corr: (0.6287007715327002, 0.0)
   Spearman corr: (-0.6831650103622472, 0.0)
@@ -74,7 +72,6 @@
   $ python3 count_NG_reads.py dict.stgokng < sample.stgmixd
   ```
 
-  output ex.)
   ```
   OK reads:	3905999	(98.35694009617629%)
   NG reads:	65250	(1.6430599038237088%)
@@ -85,7 +82,6 @@
   $ python3 count_mut_barcodes.py clone1.tsv [clone2.tsv ...]
   ```
 
-  output ex.)
   ```
   wsn_mut_table_NANOG_128_a.tsv	NT	71403
   wsn_mut_table_NANOG_128_a.tsv	DTX	69733
@@ -100,7 +96,6 @@
   $ python3 count_mut_barcodes2.py clone1.tsv [clone2.tsv ...] > output
   ```
 
-  output ex.)
   ```
   wsn_mut_table_NANOG_128_a.tsv	NT	178079	53576	14001	3161	573	74	18
   wsn_mut_table_NANOG_128_a.tsv	DTX	179749	51983	13792	3309	561	70	18

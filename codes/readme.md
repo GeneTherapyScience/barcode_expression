@@ -3,10 +3,10 @@
 ## File formats
 - .wsn : lines including barcode, reads and mutated-reads.
   ```
-  WSN	Total	Mut
-  TCAAGTTGAAGGTGCTGCAGTTGCACATCT	420092	1457
-  AGATGCTGAAGGAGATGAAGCAGCTGCACA	121098	443
-  TGATGTACATGCTGAAGTAGCTCGTGATGC 	27971	84
+  WSN	Total	Mut	Mut/total
+  TCAAGTTGAAGGTGCTGCAGTTGCACATCT	420092	1457	0.0034682878988412063
+  AGATGCTGAAGGAGATGAAGCAGCTGCACA	121098	443	0.003658194189829725
+  TGATGTACATGCTGAAGTAGCTCGTGATGC 	27971	84	0.003003110364305888
   ...
   ```
 
@@ -109,6 +109,8 @@
   ```bash
   $ python3 extractWSN.py < sample.wsn > output.wsn
   ```
+
+
 
 - filter_wsnstg.py : Keep barcodes given to stdin, in each `.wsnstg` file given in command-line. Results are written in corresponding `.filtered.wsnstg` files.
   ```bash

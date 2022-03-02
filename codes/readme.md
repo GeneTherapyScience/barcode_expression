@@ -100,6 +100,16 @@
   $ python3 count_mut_barcodes2.py clone1.tsv [clone2.tsv ...] > output
   ```
 
+  output ex.)
+  ```
+  wsn_mut_table_NANOG_128_a.tsv	NT	178079	53576	14001	3161	573	74	18
+  wsn_mut_table_NANOG_128_a.tsv	DTX	179749	51983	13792	3309	561	70	18
+  wsn_mut_table_NANOG_128_a.tsv	Sp	188243	47881	10966	2056	297	30	9
+  wsn_mut_table_POU5F1_114_a.tsv	NT	223372	23084	2724	406	29	2	7
+  wsn_mut_table_POU5F1_114_a.tsv	DTX	221577	24487	2991	454	76	26	13
+  wsn_mut_table_POU5F1_114_a.tsv	Sp	238620	10031	774	149	40	4	6
+  ```
+
 - extractWSN.py : Delete lines of non-WSN barcode.
   ```bash
   $ python3 extractWSN.py < sample.wsn > output.wsn

@@ -147,7 +147,7 @@ def get_stg_cdf(
         f[q].close()
 
 def make_wsn_mut_table(
-    outfile="../wsn_mut_table_{}_a.tsv",
+    outfile="../wsn_mut_table/wsn_mut_table_{}_a.tsv",
     clones=[('NANOG',112),('NANOG',128),('NANOG',151),('SOX2',98),('SOX2',101),('POU5F1',112),('POU5F1',114)],
     datadir='../wsnstg_white40_hamm2B/',
     ratio=0,

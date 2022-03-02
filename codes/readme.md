@@ -93,7 +93,7 @@
 
 - count_mut_barcodes2.py : Similar to `count_mut_barcodes.py`. Count variations `k` samples (`k=0,1,2,....`) of which include stg mutations, for each envirionment.
   ```bash
-  $ python3 count_mut_barcodes2.py clone1.tsv [clone2.tsv ...] > output
+  $ python3 count_mut_barcodes2.py clone1.tsv [clone2.tsv ...]
   ```
 
   ```

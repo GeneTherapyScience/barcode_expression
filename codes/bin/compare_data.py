@@ -64,4 +64,4 @@ if __name__ == '__main__':
     P = scipy.stats.pearsonr(*X)
     S = scipy.stats.spearmanr(*X)
     print('Pearson corr:', P)
-    print('Spearman corr:', S)
+    print('Spearman corr:', tuple(S))

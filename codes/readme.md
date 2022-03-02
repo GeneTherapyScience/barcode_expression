@@ -51,6 +51,13 @@
   $ python3 checkWSN.py < sample.wsn
   ```
 
+  output ex.)
+  ```
+  100%|██████████████████████████████████████████████████████| 517760/517760 [02:35<00:00, 3319.73it/s]
+  Variation-base: avarage = 0.0919171044499382, distribution = [(0, 473317), (1, 41602), (2, 2582), (3, 220), (4, 32), (5, 5), (6, 2)]
+  Readnum-base: avarage = 0.037824576405235975, distribution = [(0, 3918574), (1, 139565), (2, 6525), (3, 326), (4, 32), (5, 5), (6, 2)]
+  ```
+
 - compare_data.py : Compute & display Pearson & Spearman correlations between two datasets of barcode-reads.
   ```bash
   $ python3 compare_data.py sample1.wsn sample2.wsn

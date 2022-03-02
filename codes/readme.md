@@ -1,7 +1,7 @@
 # Tools to analyze WSN/stg data of barcoded cells
 
 ## File formats
-- .wsn : consists of lines including barcode, reads and mutated-reads.
+- .wsn : lines including barcode, reads and mutated-reads.
   ```
   WSN	Total	Mut
   TCAAGTTGAAGGTGCTGCAGTTGCACATCT	420092	1457
@@ -18,7 +18,7 @@
   ...
   ```
 
-- .wsnstg : consists of lines including barcode, stg and reads.
+- .wsnstg : lines including barcode, stg and reads.
   ```
   WSN	stg	reads
   TCAAGTTGAAGGTGCTGCAGTTGCACATCT	GGTGGCTTTACCAACAGTAC	23044
@@ -33,6 +33,15 @@
   AAACACCGGTGGCTTTACCAACAGTAC
   AAACACCGGTGGCTTTTACCGGTGGCTTTACCAACAGTAC
   AAACGGTGGCTTTACCAACAGTAC
+  ...
+  ```
+
+- .stgmixd : lines including distance from the template, total reads, barcode variations, stg sequence and the MIXD string of alignment (M: match, I: insertion, X: mismatch, D: deletion). 
+  ```
+  distance reads WSN's stg mixd
+  0.0     6418242 694576  GGTGGCTTTACCAACAGTAC    MMMMMMMMMMMMMMMMMMMM
+  1.0     1330    1173    GGTGGCTTCACCAACAGTAC    MMMMMMMMXMMMMMMMMMMM
+  2.5     3808    951     GGTGGCTTTACCAACATAC     MMMMMMMMMMMMMMMMDMMM
   ...
   ```
 

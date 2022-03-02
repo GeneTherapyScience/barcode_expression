@@ -58,9 +58,15 @@
   Readnum-base: avarage = 0.037824576405235975, distribution = [(0, 3918574), (1, 139565), (2, 6525), (3, 326), (4, 32), (5, 5), (6, 2)]
   ```
 
-- compare_data.py : Compute & display Pearson & Spearman correlations between two datasets of barcode-reads.
+- compare_data.py : Compute & display (correlation, pvalue) pairs, for both Pearson & Spearman, between two datasets of barcode-reads.
   ```bash
   $ python3 compare_data.py sample1.wsn sample2.wsn
+  ```
+  
+  output ex.)
+  ```
+  Pearson corr: (0.6287007715327002, 0.0)
+  Spearman corr: (-0.6831650103622472, 0.0)
   ```
 
 - count_NG_reads.py : Count & display reads of decendants of initial irregular stg.

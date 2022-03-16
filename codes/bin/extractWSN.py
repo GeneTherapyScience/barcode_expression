@@ -26,7 +26,7 @@ if __name__ == '__main__':
                         help='the input does not include header.')
     parser.add_argument('--onlybarcode', action='store_true',
                         help='output only barcodes.')
-    parser.add_argument('--column', type=int, default=1,
+    parser.add_argument('--column', type=int, default=0,
                         help='column where to read barcode.')
     parser.add_argument('--filelist', action='store_true',
                         help='read filelist from stdin & output overwrap.')

@@ -105,12 +105,28 @@
   wsn_mut_table_POU5F1_114_a.tsv	Sp	238620	10031	774	149	40	4	6
   ```
 
-- extractWSN.py : Delete lines of non-WSN barcode.
+- extractWSN.py : Keep only lines of WSN barcode.
   ```bash
   $ python3 extractWSN.py < sample.wsn > output.wsn
   ```
-
-
+  input.wsn
+  
+  ```
+  WSN	Total	Mut	Mut/total
+  TCAAGTTGAAGGTGCTGCAGTTGCACATCT	420092	1457	0.0034682878988412063
+  GATGCTGAAGGAGATGAAGCAGCTGCACA	121098	443	0.003658194189829725
+  TGATGTACATGCTGAAGTAGCTCGTGATGC 	27971	84	0.003003110364305888
+  ...
+  ```
+  
+  output.wsn
+  
+  ```
+  WSN	Total	Mut	Mut/total
+  TCAAGTTGAAGGTGCTGCAGTTGCACATCT	420092	1457	0.0034682878988412063
+  TGATGTACATGCTGAAGTAGCTCGTGATGC 	27971	84	0.003003110364305888
+  ...
+  ```
 
 - filter_wsnstg.py : Keep barcodes given to stdin, in each `.wsnstg` file given in command-line. Results are written in corresponding `.filtered.wsnstg` files.
   ```bash

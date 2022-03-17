@@ -48,6 +48,7 @@
 ## bin/
 - checkWSN.py : Display percentage of WSN barcodes in the input data.
   ```bash
+  $ python3 checkWSN.py --help
   $ python3 checkWSN.py < sample.wsn
   ```
   (output example)
@@ -59,6 +60,7 @@
 
 - compare_data.py : Compute & display (correlation, pvalue) pairs, for both Pearson & Spearman, between two datasets of barcode-reads.
   ```bash
+  $ python3 compare_data.py --help
   $ python3 compare_data.py sample1.wsn sample2.wsn
   ```
   
@@ -107,6 +109,7 @@
 
 - extractWSN.py : Keep only lines of WSN barcode.
   ```bash
+  $ python3 extractWSN.py --help
   $ python3 extractWSN.py < sample.wsn > output.wsn
   ```
   input.wsn

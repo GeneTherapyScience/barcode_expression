@@ -13,7 +13,7 @@ outdir = './'
 
 if __name__ == '__main__':
     infiles = sys.argv[1:]
-    population_barcodes = {barcode for barcode in inputs()}
+    population_barcodes = {line.split()[0] for line in inputs()}
     for infile_name in infiles:
         outfile_name = os.path.join(outdir,
             re.sub('\.'+in_suffix+'$', '', os.path.basename(infile_name)) + '.' + out_suffix

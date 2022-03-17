@@ -130,7 +130,27 @@
 
 - filter_wsnstg.py : Keep barcodes given to stdin, in each `.wsnstg` file given in command-line. Results are written in corresponding `.filtered.wsnstg` files.
   ```bash
-  $ python3 filter_wsnstg.py sample1.wsnstg [sample2.wsnstg ...] < reference_barcodes.bar
+  $ python3 filter_wsnstg.py sample1.wsnstg [sample2.wsnstg ...] < reference_barcodes.wsn
+  ```
+  reference_barcodes.wsn
+  ```
+  TCAAGTTGAAGGTGCTGCAGTTGCACATCT
+  AGGACGTGGAGAACCAGTTCGACAACGAGG
+  ```
+  sample1.wsnstg
+  ```
+  WSN	stg	reads
+  TCAAGTTGAAGGTGCTGCAGTTGCACATCT	GGTGGCTTTACCAACAGTAC	23044
+  AGATGCTGAAGGAGATGAAGCAGCTGCACA	GGTGGCTTTACCAACAGTAC	7387
+  AGGACGTGGAGAACCAGTTCGACAACGAGG	GGTGGCTTTACCAACAGTAC	3772
+  ...
+  ```
+  sample1.filtered.wsnstg
+  ```
+  WSN	stg	reads
+  TCAAGTTGAAGGTGCTGCAGTTGCACATCT	GGTGGCTTTACCAACAGTAC	23044
+  AGGACGTGGAGAACCAGTTCGACAACGAGG	GGTGGCTTTACCAACAGTAC	3772
+  ...
   ```
 
 - generate_commonbarcodes_table.py : Reads & proportions of barcodes, included in the reference file.

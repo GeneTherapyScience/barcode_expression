@@ -1,6 +1,6 @@
 # DNA barcoding and gene expression recording reveal elite cancer cells during tumor progression
 
-Yuka Umeki, Noriaki Ogawa, Kotaro Saga, Yasufumi Kaneda and Keisuke Nimura
+Yuka Umeki, Noriaki Ogawa, Yuko Uegaki, Kotaro Saga, Yasufumi Kaneda and Keisuke Nimura
 
 Division of Gene Therapy Science,
 Department of Genome Biology,
